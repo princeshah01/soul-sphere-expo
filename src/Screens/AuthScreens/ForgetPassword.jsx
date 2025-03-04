@@ -19,24 +19,31 @@ import {
   responsiveWidth,
   responsiveFontSize,
 } from "react-native-responsive-dimensions";
+import axios from "axios";
 
 const ForgetPassword = ({ navigation }) => {
   const { isDark } = useDarkMode();
   const [email, setEmail] = useState("");
   const [visible, setVisible] = useState(false);
   const [msg, setMsg] = useState("");
-  let timer;
-  const handelForget = () => {
+  const handelForget = async () => {
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       setMsg("Invalid email format");
       return;
     }
-    setVisible(true);
-    timer = setTimeout(() => {
-      setVisible(false);
+    try {
+      const response = await axios.post(
+        "http://192.168.137.111:3000/forgetPassword",
+        { email }
+      );
 
-      navigation.goBack();
-    }, 5000);
+      if (response.status == 200) {
+        console.log(response.data);
+      }
+    } catch (error) {
+      console.log(error.response);
+    }
+    setVisible(true);
   };
   return (
     <ScrollView
@@ -107,6 +114,7 @@ const ForgetPassword = ({ navigation }) => {
           <GradientButton
             onPress={handelForget}
             name="Reset Password"
+            disabled={visible}
             styleByProp={{
               width: responsiveWidth(90),
             }}
@@ -115,13 +123,15 @@ const ForgetPassword = ({ navigation }) => {
       </View>
       <Snackbar
         visible={visible}
-        onDismiss={() => setVisible(false)}
+        duration={5000}
+        onDismiss={() => {
+          navigation.goBack("Login");
+          setVisible(false);
+        }}
         action={{
           label: "OK",
           onPress: () => {
             setVisible(false);
-            navigation.goBack();
-            clearTimeout(timer);
           },
         }}
         style={{

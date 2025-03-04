@@ -11,6 +11,7 @@ import {
   responsiveWidth,
   responsiveFontSize,
 } from "react-native-responsive-dimensions";
+import axios, { Axios } from "axios";
 
 const Signup = ({ navigation }) => {
   const { isDark } = useDarkMode();
@@ -23,6 +24,19 @@ const Signup = ({ navigation }) => {
   const [password, setPassword] = useState("");
   const [passwordVerify, setPasswordVerify] = useState(null);
   const [msg, setMsg] = useState("");
+  const [fullName, setFullName] = useState("");
+  const [nameVerify, setNameVerify] = useState(false);
+
+  function handleName(e) {
+    setFullName(e);
+    if (e.length == 0) {
+      setNameVerify(null);
+    } else if (e.length >= 4) {
+      setNameVerify(true);
+    } else {
+      setNameVerify(false);
+    }
+  }
 
   function handlePassword(e) {
     setPassword(e);
@@ -65,7 +79,8 @@ const Signup = ({ navigation }) => {
     }
   }
 
-  const handleSignup = () => {
+  const handleSignup = async () => {
+    setMsg("");
     if (
       !(
         userNameVerify &&
@@ -82,13 +97,23 @@ const Signup = ({ navigation }) => {
       setMsg("Passwords do not match");
       return;
     }
-    // write api call for signup
-    setMsg("");
-    Alert.alert(
-      "Check Your mail ID",
-      "We have sent you one link in your registered mail id check it for verification"
-    );
-    navigation.navigate("ProfileSetup");
+    try {
+      const response = await axios.post("http://192.168.137.111:3000/signup", {
+        userName,
+        fullName,
+        email,
+        password,
+      });
+
+      if (response.status == 200) {
+        console.log("signup success fully");
+        console.log(response.data);
+        Alert.alert("Read It Carefully", `${response.data.message}`);
+        navigation.navigate("Login");
+      }
+    } catch (error) {
+      setMsg(error?.response?.data?.error);
+    }
   };
 
   return (
@@ -126,6 +151,14 @@ const Signup = ({ navigation }) => {
           </Text>
         </View>
 
+        <InputField
+          name="Full Name"
+          icon="user"
+          dataValue={fullName}
+          setValue={handleName}
+          isDark={isDark}
+          verify={userNameVerify}
+        />
         <InputField
           name="Username"
           icon="user"

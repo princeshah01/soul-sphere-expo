@@ -18,8 +18,13 @@ import {
   responsiveWidth,
   responsiveFontSize,
 } from "react-native-responsive-dimensions";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useDispatch } from "react-redux";
+import { login } from "../../Store/Slice/Auth.jsx";
+import axios from "axios";
 
 const Login = ({ navigation }) => {
+  const dispatch = useDispatch();
   const { isDark } = useDarkMode();
   const [email, setEmail] = useState("");
   const [emailVerify, setEmailVerify] = useState(null);
@@ -49,16 +54,35 @@ const Login = ({ navigation }) => {
 
   const [msg, setMsg] = useState(""); // from api get data
 
-  //   const handleEmail = (value) => {};
-  const handleLogin = () => {
-    if (emailVerify && passwordVerify) {
-      setMsg("");
-      // hit api to get authenticated
-
-      Alert.alert("Logged In", "Login Successfully!");
-      //   navigation.replace("Home");
-    } else {
+  const handleLogin = async () => {
+    if (!emailVerify || !passwordVerify) {
       setMsg("Please enter valid email and password");
+      return;
+    }
+
+    setMsg("");
+
+    try {
+      const response = await axios.post("http://192.168.137.111:3000/login", {
+        email: email,
+        password: password,
+      });
+
+      if (response.status === 200) {
+        const data = response.data;
+        console.log("form login ", data.user);
+        await AsyncStorage.setItem("token", data.token);
+        await AsyncStorage.setItem("user", JSON.stringify(data.user));
+        console.log(data.user);
+        dispatch(login({ user: data.user, token: data.token }));
+        Alert.alert("Success", `${data.msg}`);
+      } else {
+        console.log("data from login", response.data);
+        setMsg("Invalid credentials");
+      }
+    } catch (error) {
+      console.warn("Login Error:", error.response.data);
+      setMsg(error.response?.data?.error || "Something went wrong");
     }
   };
 

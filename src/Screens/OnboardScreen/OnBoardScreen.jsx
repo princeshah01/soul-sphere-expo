@@ -12,7 +12,7 @@ const OnboardScreen = ({ onFinish }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const flatListRef = useRef(null);
   const { isDark } = useDarkMode();
-  console.log(isDark);
+  // console.log(isDark);
   return (
     <SafeAreaView
       style={[
