@@ -6,12 +6,13 @@ import InputField from "../../Components/InputField.jsx";
 import { Theme } from "../../Constant/Theme.js";
 import BackButton from "../../Components/BackButton.jsx";
 import { useDarkMode } from "../../provider/DarkModeProvider.jsx";
+import env from "../../Constant/env.js";
 import {
   responsiveHeight,
   responsiveWidth,
   responsiveFontSize,
 } from "react-native-responsive-dimensions";
-import axios, { Axios } from "axios";
+import axios from "axios";
 
 const Signup = ({ navigation }) => {
   const { isDark } = useDarkMode();
@@ -25,7 +26,7 @@ const Signup = ({ navigation }) => {
   const [passwordVerify, setPasswordVerify] = useState(null);
   const [msg, setMsg] = useState("");
   const [fullName, setFullName] = useState("");
-  const [nameVerify, setNameVerify] = useState(false);
+  const [nameVerify, setNameVerify] = useState(null);
 
   function handleName(e) {
     setFullName(e);
@@ -86,7 +87,8 @@ const Signup = ({ navigation }) => {
         userNameVerify &&
         emailVerify &&
         passwordVerify &&
-        confirmPasswordVerify
+        confirmPasswordVerify &&
+        nameVerify
       )
     ) {
       setMsg("Please enter valid Details");
@@ -98,7 +100,7 @@ const Signup = ({ navigation }) => {
       return;
     }
     try {
-      const response = await axios.post("http://192.168.137.111:3000/signup", {
+      const response = await axios.post(`${env.API_BASE_URL}/signup`, {
         userName,
         fullName,
         email,
@@ -157,7 +159,7 @@ const Signup = ({ navigation }) => {
           dataValue={fullName}
           setValue={handleName}
           isDark={isDark}
-          verify={userNameVerify}
+          verify={nameVerify}
         />
         <InputField
           name="Username"

@@ -13,6 +13,7 @@ import InputField from "../../Components/InputField.jsx";
 import SocialButton from "../../Components/SocialButton.jsx";
 import { Theme } from "../../Constant/Theme.js";
 import { useDarkMode } from "../../provider/DarkModeProvider.jsx";
+import env from "../../Constant/env.js";
 import {
   responsiveHeight,
   responsiveWidth,
@@ -63,7 +64,7 @@ const Login = ({ navigation }) => {
     setMsg("");
 
     try {
-      const response = await axios.post("http://192.168.137.111:3000/login", {
+      const response = await axios.post(`${env.API_BASE_URL}/login`, {
         email: email,
         password: password,
       });

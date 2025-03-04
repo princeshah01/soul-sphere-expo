@@ -10,6 +10,7 @@ import AuthNavigation from "./src/Navigation/Authnavigation";
 import { useSelector, useDispatch } from "react-redux";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { login } from "./src/Store/Slice/Auth";
+import { Theme } from "./src/Constant/Theme";
 function MainApp() {
   const Auth = useSelector((store) => store.Auth.isAuthenticated);
   const dispatch = useDispatch();
@@ -28,7 +29,7 @@ function MainApp() {
           );
         }
         dispatch(login(data));
-      } catch (err) {}
+      } catch (err) { }
     };
     GetDataFormLocal();
   }, []);
@@ -39,7 +40,7 @@ function MainApp() {
   return (
     <NavigationContainer>
       {Auth ? <AppNavigation /> : <AuthNavigation />}
-      <StatusBar style={isDark ? "light" : "dark"} />
+      <StatusBar style={isDark ? "light" : "dark"} backgroundColor={isDark ? Theme.dark.background : Theme.light.background} />
     </NavigationContainer>
   );
 }

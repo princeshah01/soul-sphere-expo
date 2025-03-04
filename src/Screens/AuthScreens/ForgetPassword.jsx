@@ -32,10 +32,9 @@ const ForgetPassword = ({ navigation }) => {
       return;
     }
     try {
-      const response = await axios.post(
-        "http://192.168.137.111:3000/forgetPassword",
-        { email }
-      );
+      const response = await axios.post(`${env.API_BASE_URL}/forgetpassword`, {
+        email,
+      });
 
       if (response.status == 200) {
         console.log(response.data);

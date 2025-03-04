@@ -9,27 +9,6 @@ import Signup from "../Screens/AuthScreens/SignUp";
 import ForgetPassword from "../Screens/AuthScreens/ForgetPassword";
 const Stack = createStackNavigator();
 
-//// if want to clear async storage then use code below
-
-// const Home = () => {
-//   return (
-//     <View>
-//       <Text onPress={clearAppData}>Home</Text>
-//     </View>
-//   );
-// };
-
-// const clearAppData = async () => {
-//   try {
-//     await AsyncStorage.clear();
-//     console.log("App data cleared");
-//   } catch (e) {
-//     console.error("Failed to clear app data", e);
-//   }
-// };
-
-// clearing AsyncStorage end here
-
 const AuthNavigation = () => {
   const [isFirstLaunch, setIsFirstLaunch] = React.useState(null);
   useEffect(() => {

@@ -6,6 +6,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useDispatch } from "react-redux";
 import { logout } from "../Store/Slice/Auth";
 import { useSelector } from "react-redux";
+import HomeNavigation from "./HomeNavigation";
+import LocationPicker from "../Screens/ProfileSetup/LocationPicker";
 const Stack = createStackNavigator();
 //// if want to clear async storage then use code below
 
@@ -19,10 +21,9 @@ const clearAppData = async () => {
 };
 
 // clearing AsyncStorage end here
-const Home = () => {
+
+const ProfileSetup = () => {
   const dispatch = useDispatch();
-  const user = useSelector((store) => store.Auth.user);
-  console.log("from app navigation", user);
   return (
     <View>
       <Text
@@ -31,24 +32,32 @@ const Home = () => {
           clearAppData();
         }}
       >
-        Home
+        Profile Setup
       </Text>
-      <Text>{user.bio}</Text>
-      {/* <Text>{token}</Text> */}
     </View>
   );
 };
 
 const AppNavigation = () => {
+  const user = useSelector((store) => store.Auth.user);
+  console.log("from app navigation", user);
   return (
     <SafeAreaProvider>
       <SafeAreaView style={{ flex: 1 }}>
         <Stack.Navigator>
-          <Stack.Screen
-            name="Home"
-            component={Home}
-            options={{ headerShown: false }}
-          />
+          {user.isProfileSetup ? (
+            <Stack.Screen
+              name="Home"
+              component={HomeNavigation}
+              options={{ headerShown: false }}
+            />
+          ) : (
+            <Stack.Screen
+              name="ProfileSetup"
+              component={LocationPicker}
+              options={{ headerShown: false }}
+            />
+          )}
         </Stack.Navigator>
       </SafeAreaView>
     </SafeAreaProvider>
