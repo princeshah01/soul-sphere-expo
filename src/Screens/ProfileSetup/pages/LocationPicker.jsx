@@ -1,5 +1,5 @@
 import MapView, { Marker } from "react-native-maps";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { View, StyleSheet, TextInput, TouchableOpacity } from "react-native";
 import { Theme } from "../../../Constant/Theme";
 import { useDarkMode } from "../../../provider/DarkModeProvider.jsx";
@@ -11,7 +11,7 @@ import {
 } from "react-native-responsive-dimensions";
 import axios from "axios";
 import { lightMapStyle, darkMapStyle } from "../../../Constant/MapStyle.js";
-const LocationPicker = () => {
+const LocationPicker = ({ userInfo, setUserInfo }) => {
   const { isDark } = useDarkMode();
   const [searchValue, setSearchValue] = useState("");
   const mapRef = useRef(null);
@@ -21,6 +21,13 @@ const LocationPicker = () => {
     latitudeDelta: 0.5,
     longitudeDelta: 0.5,
   });
+  useEffect(() => {
+    setUserInfo((prev) => ({
+      ...prev,
+      locationName: searchValue,
+      locationCoordinates: { lat: region.latitude, lon: region.longitude },
+    }));
+  }, [region, searchValue]);
   const searchLocation = async () => {
     if (!searchValue.trim()) {
       return;

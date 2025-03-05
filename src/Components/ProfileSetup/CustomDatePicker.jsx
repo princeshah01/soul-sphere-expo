@@ -18,7 +18,7 @@ const CustomDatePicker = ({ value, setValue, editable = false }) => {
   const onDateChange = (event, selectedDate) => {
     setShowDatePicker(false);
     if (selectedDate) {
-      setValue((prev) => selectedDate);
+      setValue(selectedDate);
     }
   };
   return (

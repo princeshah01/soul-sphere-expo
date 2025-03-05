@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, TouchableOpacity, Image, StyleSheet } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 
@@ -11,14 +11,15 @@ import { Theme } from "../../../Constant/Theme";
 import { useDarkMode } from "../../../provider/DarkModeProvider";
 import CustomGenderDrop from "../../../Components/ProfileSetup/CustomGenderDrop";
 
-const ProfileSetupPage3 = () => {
+const ProfileSetupPage3 = ({ setUserInfo }) => {
   const { isDark } = useDarkMode();
   const [bestPhotos, setBestPhotos] = useState([]);
+  const [InterestIn, setInterestIn] = useState("");
   const pickImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ["images"],
       allowsEditing: true,
-      aspect: [1, 1],
+      aspect: [2, 2],
       quality: 1,
     });
 
@@ -29,6 +30,13 @@ const ProfileSetupPage3 = () => {
     }
   };
 
+  useEffect(() => {
+    setUserInfo((prev) => ({
+      ...prev,
+      twoBestPics: bestPhotos,
+      preferenceGender: InterestIn,
+    }));
+  }, [bestPhotos, InterestIn]);
   return (
     <View style={{ width: responsiveWidth(100) }}>
       <View style={{ width: responsiveWidth(90), alignSelf: "center" }}>
@@ -94,6 +102,8 @@ const ProfileSetupPage3 = () => {
         </Text>
         <CustomGenderDrop
           style={{ width: responsiveWidth(90) }}
+          Gender={InterestIn}
+          setGender={setInterestIn}
           placeholder="Select your preference"
           editable={true}
         />

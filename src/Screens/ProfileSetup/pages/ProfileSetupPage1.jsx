@@ -1,6 +1,6 @@
 import { Theme } from "../../../Constant/Theme";
 import { View, TextInput, Text, StyleSheet, ScrollView } from "react-native";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CustomGenderDrop from "../../../Components/ProfileSetup/CustomGenderDrop";
 import ProfileImage from "../../../Components/ProfileSetup/ProfileImage";
 import CustomDatePicker from "../../../Components/ProfileSetup/CustomDatePicker";
@@ -11,27 +11,20 @@ import {
 } from "react-native-responsive-dimensions";
 import { useDarkMode } from "../../../provider/DarkModeProvider";
 import CustomInput from "../../../Components/ProfileSetup/CustomInput";
-import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
-import { firstPage } from "../../../Store/Slice/ProfileSetup";
-const ProfileSetupPage1 = ({ currentIndex }) => {
-  const { fullName, email } = useSelector((store) => store.Auth.user);
 
-  const dispatch = useDispatch();
+const ProfileSetupPage1 = ({ userInfo, setUserInfo, currentIndex }) => {
+  const { fullName, email } = useSelector((store) => store.Auth.user);
+  useEffect(() => {
+    setUserInfo((prev) => ({ ...prev, fullName: fullName, email: email }));
+  }, []);
+
   const { isDark } = useDarkMode();
   const [dob, setDob] = useState(new Date());
   const [gender, setGender] = useState("");
   const [bio, setBio] = useState("");
   const [profilePicture, setProfilePicture] = useState("");
 
-  function getData() {
-    console.log(dob);
-    console.log(fullName);
-    console.log(email);
-    console.log(gender);
-    console.log(bio);
-    console.log(profilePicture);
-  }
   return (
     <ScrollView
       keyboardShouldPersistTaps="always"
@@ -52,8 +45,10 @@ const ProfileSetupPage1 = ({ currentIndex }) => {
         }}
       >
         <ProfileImage
-          profilePicture={profilePicture}
-          setProfilePicture={setProfilePicture}
+          profilePicture={userInfo.profilePic}
+          setProfilePicture={(value) =>
+            setUserInfo((prev) => ({ ...prev, profilePic: value }))
+          }
           disabled={false}
           size={150}
         />
@@ -68,10 +63,16 @@ const ProfileSetupPage1 = ({ currentIndex }) => {
           {fullName}
         </Text>
         <CustomInput iconName="mail" name="Email" value={email} />
-        <CustomDatePicker value={dob} setValue={setDob} editable={true} />
+        <CustomDatePicker
+          value={userInfo.dob}
+          setValue={(value) => setUserInfo((prev) => ({ ...prev, dob: value }))}
+          editable={true}
+        />
         <CustomGenderDrop
-          Gender={gender}
-          setGender={setGender}
+          Gender={userInfo.gender}
+          setGender={(value) =>
+            setUserInfo((prev) => ({ ...prev, gender: value }))
+          }
           editable={true}
         />
         <View
@@ -85,8 +86,10 @@ const ProfileSetupPage1 = ({ currentIndex }) => {
           ]}
         >
           <TextInput
-            value={bio}
-            onChangeText={setBio}
+            value={userInfo.bio}
+            onChangeText={(value) =>
+              setUserInfo((prev) => ({ ...prev, bio: value }))
+            }
             placeholder="Bio"
             maxLength={50}
             placeholderTextColor={
@@ -94,10 +97,13 @@ const ProfileSetupPage1 = ({ currentIndex }) => {
             }
             multiline={true}
             numberOfLines={4}
-            style={{ fontSize: responsiveFontSize(1.9), fontWeight: 500 }}
+            style={{
+              fontSize: responsiveFontSize(2),
+              fontWeight: 500,
+              color: isDark ? Theme.dark.text : Theme.light.text,
+            }}
           />
         </View>
-        <Text onPress={getData}>get data</Text>
       </View>
     </ScrollView>
   );

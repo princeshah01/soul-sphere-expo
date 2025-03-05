@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View, FlatList } from "react-native";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   responsiveWidth,
   responsiveFontSize,
@@ -11,21 +11,38 @@ import { useDarkMode } from "../../../provider/DarkModeProvider";
 import RenderInterestItem from "./Interests";
 import interestData from "../../../Constant/interestData";
 
-const ProfileSetupPage2 = () => {
+const ProfileSetupPage2 = ({ userInfo, setUserInfo }) => {
   const toggleInterest = (id) => {
-    const updatedInterests = interests.map((interest) =>
-      interest.id === id
-        ? { ...interest, selected: !interest.selected }
-        : interest
+    setInterests((prev) =>
+      prev.map((interest) =>
+        interest.id === id
+          ? { ...interest, selected: !interest.selected }
+          : interest
+      )
     );
-    setInterests(updatedInterests);
+    const selectedInterest = interests.find((item) => item.id === id);
+    if (selectedInterest) {
+      if (selectedInterest.selected) {
+        setInterestToSave((prev) =>
+          prev.filter((name) => name !== selectedInterest.name)
+        );
+      } else {
+        setInterestToSave((prev) => [...prev, selectedInterest.name]);
+      }
+    }
   };
   const { isDark } = useDarkMode();
+  const [InterestToSave, setInterestToSave] = useState([]);
   const [interests, setInterests] = useState(interestData);
-
+  useEffect(() => {
+    setUserInfo((prev) => ({
+      ...prev,
+      interests: InterestToSave,
+    }));
+  }, [InterestToSave]);
   return (
     <View style={styles.mainContainer}>
-      <LocationPicker />
+      <LocationPicker userInfo={userInfo} setUserInfo={setUserInfo} />
       <View style={{ flex: 1 }}>
         <Text
           style={{
@@ -63,3 +80,9 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 });
+
+// const updatedInterests = interests.map((interest) =>
+//   interest.id === id
+//     ? { ...interest, selected: !interest.selected }
+//     : interest
+// );

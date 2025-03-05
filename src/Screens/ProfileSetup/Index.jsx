@@ -10,6 +10,19 @@ const ProfileSetup = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const flatListRef = useRef(null);
   const { isDark } = useDarkMode();
+  const [userInfo, setUserInfo] = useState({
+    profilePic: "",
+    fullname: "",
+    email: "",
+    dob: new Date(),
+    gender: "",
+    bio: "",
+    locationName: "",
+    locationCoordinates: {},
+    interests: [],
+    twoBestPics: [],
+    preferenceGender: "",
+  });
 
   return (
     <View
@@ -27,7 +40,16 @@ const ProfileSetup = () => {
         pagingEnabled
         showsHorizontalScrollIndicator={false}
         data={pageData}
-        renderItem={({ item }) => item}
+        renderItem={({ item }) => {
+          const Component = item;
+          return (
+            <Component
+              userInfo={userInfo}
+              setUserInfo={setUserInfo}
+              currentIndex={currentIndex}
+            />
+          );
+        }}
         keyExtractor={(item, index) => `${item.id}_${index}`}
         onScroll={(event) => {
           const offsetX = event.nativeEvent.contentOffset.x;
@@ -40,6 +62,7 @@ const ProfileSetup = () => {
         currentIndex={currentIndex}
         data={pageData}
         flatListRef={flatListRef}
+        userInfo={userInfo}
       />
     </View>
   );

@@ -3,9 +3,8 @@ import CustomButton from "../../Components/CustomBotton";
 import React from "react";
 import { responsiveWidth } from "react-native-responsive-dimensions";
 
-const FooterProfileSetup = ({ currentIndex, data, flatListRef }) => {
+const FooterProfileSetup = ({ currentIndex, data, flatListRef, userInfo }) => {
   const HandleNext = () => {
-    console.log(currentIndex + "component index");
     const nextIndex = currentIndex + 1;
     if (nextIndex < data.length) {
       const nextOffset = nextIndex * responsiveWidth(100);
@@ -14,6 +13,8 @@ const FooterProfileSetup = ({ currentIndex, data, flatListRef }) => {
         offset: nextOffset,
         animated: true,
       });
+    } else {
+      console.log("fetchApi", userInfo); /// fetch api here
     }
   };
   const HandleBack = () => {
@@ -27,7 +28,6 @@ const FooterProfileSetup = ({ currentIndex, data, flatListRef }) => {
       });
     }
   };
-
   return (
     <View
       style={{

@@ -66,8 +66,8 @@ const ProfileImage = ({
               width: 30,
               height: 30,
               backgroundColor: isDark
-                ? Theme.dark.secondary
-                : Theme.light.secondary,
+                ? Theme.dark.background
+                : Theme.light.background,
               position: "absolute",
               bottom: 0,
               right: 0,
@@ -78,7 +78,11 @@ const ProfileImage = ({
               justifyContent: "center",
             }}
           >
-            <Icon name="camera-outline" size={20} />
+            <Icon
+              name="camera-outline"
+              size={20}
+              color={isDark ? Theme.dark.text : Theme.light.text}
+            />
           </View>
         )}
       </TouchableOpacity>
