@@ -1,8 +1,8 @@
 import MapView, { Marker } from "react-native-maps";
 import React, { useRef, useState } from "react";
 import { View, StyleSheet, TextInput, TouchableOpacity } from "react-native";
-import { Theme } from "../../Constant/Theme.js";
-import { useDarkMode } from "../../provider/DarkModeProvider.jsx";
+import { Theme } from "../../../Constant/Theme";
+import { useDarkMode } from "../../../provider/DarkModeProvider.jsx";
 import Icon from "@expo/vector-icons/Ionicons";
 import {
   responsiveHeight,
@@ -10,7 +10,7 @@ import {
   responsiveFontSize,
 } from "react-native-responsive-dimensions";
 import axios from "axios";
-
+import { lightMapStyle, darkMapStyle } from "../../../Constant/MapStyle.js";
 const LocationPicker = () => {
   const { isDark } = useDarkMode();
   const [searchValue, setSearchValue] = useState("");
@@ -18,8 +18,8 @@ const LocationPicker = () => {
   const [region, setRegion] = useState({
     latitude: 25.9397934,
     longitude: 86.7627527,
-    latitudeDelta: 0.005,
-    longitudeDelta: 0.005,
+    latitudeDelta: 0.5,
+    longitudeDelta: 0.5,
   });
   const searchLocation = async () => {
     if (!searchValue.trim()) {
@@ -46,8 +46,8 @@ const LocationPicker = () => {
           {
             latitude: lat,
             longitude: lon,
-            latitudeDelta: 0.05,
-            longitudeDelta: 0.05,
+            latitudeDelta: 1,
+            longitudeDelta: 1,
           },
           1000
         );
@@ -87,7 +87,9 @@ const LocationPicker = () => {
             width: "90%",
             height: "100%",
           }}
-          placeholderTextColor={isDark ? Theme.dark.text : Theme.light.text}
+          placeholderTextColor={
+            isDark ? Theme.dark.text + "bf" : Theme.light.text + "bf"
+          }
           value={searchValue}
           onChangeText={setSearchValue}
           placeholder="Where Are You?"
@@ -105,6 +107,7 @@ const LocationPicker = () => {
         ref={mapRef}
         style={{ flex: 1 }}
         region={region}
+        customMapStyle={isDark ? darkMapStyle : lightMapStyle}
         onRegionChangeComplete={(region) => setRegion(region)}
       >
         <Marker
