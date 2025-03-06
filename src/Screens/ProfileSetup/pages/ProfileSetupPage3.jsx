@@ -34,7 +34,7 @@ const ProfileSetupPage3 = ({ setUserInfo }) => {
     setUserInfo((prev) => ({
       ...prev,
       twoBestPics: bestPhotos,
-      preferenceGender: InterestIn,
+      interestIn: InterestIn,
     }));
   }, [bestPhotos, InterestIn]);
   return (

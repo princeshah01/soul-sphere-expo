@@ -37,7 +37,7 @@ const ProfileSetupPage2 = ({ userInfo, setUserInfo }) => {
   useEffect(() => {
     setUserInfo((prev) => ({
       ...prev,
-      interests: InterestToSave,
+      interest: InterestToSave,
     }));
   }, [InterestToSave]);
   return (

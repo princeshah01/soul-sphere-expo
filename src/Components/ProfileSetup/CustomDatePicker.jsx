@@ -14,11 +14,12 @@ const { width, height } = Dimensions.get("window");
 
 const CustomDatePicker = ({ value, setValue, editable = false }) => {
   const { isDark } = useDarkMode();
+  const DateValue = new Date(value);
   const [showDatePicker, setShowDatePicker] = useState(false);
   const onDateChange = (event, selectedDate) => {
     setShowDatePicker(false);
     if (selectedDate) {
-      setValue(selectedDate);
+      setValue(selectedDate.toDateString());
     }
   };
   return (
@@ -49,13 +50,13 @@ const CustomDatePicker = ({ value, setValue, editable = false }) => {
             fontWeight: 600,
           }}
         >
-          {value.toDateString()}
+          {DateValue.toDateString()}
         </Text>
       </TouchableOpacity>
       {showDatePicker && (
         <DateTimePicker
           themeVariant="dark"
-          value={value || new Date()}
+          value={DateValue || new Date()}
           mode="date"
           display="default"
           onChange={onDateChange}

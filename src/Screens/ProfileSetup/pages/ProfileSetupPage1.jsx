@@ -14,16 +14,17 @@ import CustomInput from "../../../Components/ProfileSetup/CustomInput";
 import { useSelector } from "react-redux";
 
 const ProfileSetupPage1 = ({ userInfo, setUserInfo, currentIndex }) => {
-  const { fullName, email } = useSelector((store) => store.Auth.user);
+  const { fullName, email, userName } = useSelector((store) => store.Auth.user);
   useEffect(() => {
-    setUserInfo((prev) => ({ ...prev, fullName: fullName, email: email }));
+    setUserInfo((prev) => ({
+      ...prev,
+      fullName: fullName,
+      email: email,
+      userName: userName,
+    }));
   }, []);
 
   const { isDark } = useDarkMode();
-  const [dob, setDob] = useState(new Date());
-  const [gender, setGender] = useState("");
-  const [bio, setBio] = useState("");
-  const [profilePicture, setProfilePicture] = useState("");
 
   return (
     <ScrollView
@@ -45,9 +46,9 @@ const ProfileSetupPage1 = ({ userInfo, setUserInfo, currentIndex }) => {
         }}
       >
         <ProfileImage
-          profilePicture={userInfo.profilePic}
+          profilePicture={userInfo.profilePicture}
           setProfilePicture={(value) =>
-            setUserInfo((prev) => ({ ...prev, profilePic: value }))
+            setUserInfo((prev) => ({ ...prev, profilePicture: value }))
           }
           disabled={false}
           size={150}

@@ -6,22 +6,27 @@ import { Theme } from "../../Constant/Theme";
 import pageData from "./pages/ProfileSetupPageData";
 import { responsiveWidth } from "react-native-responsive-dimensions";
 import FooterProfileSetup from "./FooterProfileSetup";
-const ProfileSetup = () => {
+
+const ProfileSetup = ({ navigation }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const flatListRef = useRef(null);
   const { isDark } = useDarkMode();
   const [userInfo, setUserInfo] = useState({
-    profilePic: "",
-    fullname: "",
+    profilePicture: "",
+    userName: "",
+    fullName: "",
     email: "",
-    dob: new Date(),
+    dob: new Date().toDateString(),
     gender: "",
     bio: "",
     locationName: "",
-    locationCoordinates: {},
-    interests: [],
+    locationcoordiantes: {
+      type: "Point",
+      coordinates: [],
+    },
+    interest: [],
     twoBestPics: [],
-    preferenceGender: "",
+    interestIn: "",
   });
 
   return (
@@ -63,6 +68,7 @@ const ProfileSetup = () => {
         data={pageData}
         flatListRef={flatListRef}
         userInfo={userInfo}
+        navigation={navigation}
       />
     </View>
   );

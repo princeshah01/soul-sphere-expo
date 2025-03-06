@@ -11,23 +11,18 @@ import {
 } from "react-native-responsive-dimensions";
 import axios from "axios";
 import { lightMapStyle, darkMapStyle } from "../../../Constant/MapStyle.js";
-const LocationPicker = ({ userInfo, setUserInfo }) => {
+const LocationPicker = ({ setUserInfo }) => {
   const { isDark } = useDarkMode();
   const [searchValue, setSearchValue] = useState("");
   const mapRef = useRef(null);
-  const [region, setRegion] = useState({
-    latitude: 25.9397934,
-    longitude: 86.7627527,
-    latitudeDelta: 0.5,
-    longitudeDelta: 0.5,
-  });
+  const [latitude, setlatitude] = useState(30.72301964935838);
+  const [longitude, setlongitude] = useState(76.8475926215257);
   useEffect(() => {
     setUserInfo((prev) => ({
       ...prev,
       locationName: searchValue,
-      locationCoordinates: { lat: region.latitude, lon: region.longitude },
     }));
-  }, [region, searchValue]);
+  }, [searchValue]);
   const searchLocation = async () => {
     if (!searchValue.trim()) {
       return;
@@ -48,7 +43,15 @@ const LocationPicker = ({ userInfo, setUserInfo }) => {
         setSearchValue(res.data[0].display_name);
         const lat = parseFloat(res.data[0].lat);
         const lon = parseFloat(res.data[0].lon);
-        setRegion((prev) => ({ ...prev, latitude: lat, longitude: lon }));
+        setlatitude(lat);
+        setlongitude(lon);
+        setUserInfo((prev) => ({
+          ...prev,
+          locationcoordiantes: {
+            ...prev.locationcoordiantes,
+            coordinates: [lat, lon],
+          },
+        }));
         mapRef.current?.animateToRegion(
           {
             latitude: lat,
@@ -113,21 +116,24 @@ const LocationPicker = ({ userInfo, setUserInfo }) => {
       <MapView
         ref={mapRef}
         style={{ flex: 1 }}
-        region={region}
+        region={{
+          latitude: latitude,
+          longitude: longitude,
+          latitudeDelta: 0.05,
+          longitudeDelta: 0.05,
+        }}
         customMapStyle={isDark ? darkMapStyle : lightMapStyle}
-        onRegionChangeComplete={(region) => setRegion(region)}
       >
         <Marker
           coordinate={{
-            latitude: region.latitude,
-            longitude: region.longitude,
+            latitude: latitude,
+            longitude: longitude,
           }}
         />
       </MapView>
     </View>
   );
 };
-
 const styles = StyleSheet.create({
   mainContainer: {
     // padding: 10,
