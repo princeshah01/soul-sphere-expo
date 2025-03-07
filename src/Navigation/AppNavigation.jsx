@@ -6,7 +6,7 @@ import ProfileSetup from "../Screens/ProfileSetup/Index";
 
 const AppNavigation = () => {
   const user = useSelector((store) => store.Auth.user);
-  console.log("form app ", user);
+  // console.log("form app ", user);
 
   // forcefully component to rerender
   useEffect(() => {

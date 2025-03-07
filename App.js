@@ -32,7 +32,7 @@ function MainApp() {
               isAuthenticated: true,
             })
           );
-          console.log("User data restored: ", parsedUser);
+          // console.log("User data restored: ", parsedUser);
         } else {
           console.log("No user");
         }

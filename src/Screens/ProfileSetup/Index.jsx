@@ -1,6 +1,6 @@
 import React, { useState, useRef } from "react";
 import { View, FlatList } from "react-native";
-import ProfileSetupHeader from "./ProfileSetupHeader";
+import Header from "./Header";
 import { useDarkMode } from "../../provider/DarkModeProvider";
 import { Theme } from "../../Constant/Theme";
 import pageData from "./pages/ProfileSetupPageData";
@@ -38,7 +38,7 @@ const ProfileSetup = () => {
           : Theme.light.background,
       }}
     >
-      <ProfileSetupHeader currentIndex={currentIndex} />
+      <Header currentIndex={currentIndex} name="Profile Setup" />
       <FlatList
         ref={flatListRef}
         horizontal

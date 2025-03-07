@@ -7,7 +7,7 @@ import { responsiveFontSize } from "react-native-responsive-dimensions";
 import { useSelector } from "react-redux";
 const Logout = () => {
   const user = useSelector((store) => store.Auth.user);
-  console.log(user);
+  // console.log(user);
   const dispatch = useDispatch();
   const HandleLogout = async () => {
     try {

@@ -3,9 +3,7 @@ import Icon from "@expo/vector-icons/Ionicons";
 import { Theme } from "../Constant/Theme";
 import { useDarkMode } from "../provider/DarkModeProvider";
 import { View, Text } from "react-native";
-import { useDispatch } from "react-redux";
-
-import Logout from "../Components/LogoutButton";
+import ProfileNavigation from "./ProfileNavigation";
 const Tab = createBottomTabNavigator();
 
 const getTabBarIcon = (routeName, focused, size) => {
@@ -64,22 +62,22 @@ const ChitChat = () => {
     </View>
   );
 };
-const SettingNavigation = () => {
-  const dispatch = useDispatch();
-  return (
-    <View
-      style={{
-        flex: 1,
-        backgroundColor: Theme.light.background,
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      <Text>Setting Navigation</Text>
-      <Logout />
-    </View>
-  );
-};
+// const SettingNavigation = () => {
+//   const dispatch = useDispatch();
+//   return (
+//     <View
+//       style={{
+//         flex: 1,
+//         backgroundColor: Theme.light.background,
+//         justifyContent: "center",
+//         alignItems: "center",
+//       }}
+//     >
+//       <Text>Setting Navigation</Text>
+//       <Logout />
+//     </View>
+//   );
+// };
 
 const HomeNavigation = () => {
   const { isDark } = useDarkMode();
@@ -103,7 +101,7 @@ const HomeNavigation = () => {
       <Tab.Screen name="Feed" component={Feed} />
       <Tab.Screen name="Match" component={UserConnections} />
       <Tab.Screen name="Chat" component={ChitChat} />
-      <Tab.Screen name="Profile" component={SettingNavigation} />
+      <Tab.Screen name="Profile" component={ProfileNavigation} />
     </Tab.Navigator>
   );
 };
