@@ -7,6 +7,9 @@ import env from "../../Constant/env";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useDispatch } from "react-redux";
 import { login } from "../../Store/Slice/Auth";
+import { useSelector } from "react-redux";
+import Toast from "react-native-toast-message";
+import { showToast } from "../../Components/showToast";
 
 const createFormData = (data) => {
   let formData = new FormData();
@@ -49,21 +52,9 @@ const createFormData = (data) => {
 
   return formData;
 };
-const clearAppData = async () => {
-  try {
-    await AsyncStorage.clear();
-    console.log("App data cleared");
-  } catch (e) {
-    console.error("Failed to clear app data", e);
-  }
-};
-const FooterProfileSetup = ({
-  currentIndex,
-  data,
-  flatListRef,
-  userInfo,
-  navigation,
-}) => {
+
+const FooterProfileSetup = ({ currentIndex, data, flatListRef, userInfo }) => {
+  const user = useSelector((store) => store.Auth.user);
   const dispatch = useDispatch();
   const HandleNext = async () => {
     console.log(currentIndex + "component index");
@@ -87,17 +78,16 @@ const FooterProfileSetup = ({
         userInfo.interestIn
       )
     ) {
-      Alert.alert(
-        "Incomplete Information",
+      showToast(
+        "error",
         "All fields are mandatory. You cannot skip any field."
       );
     } else {
-      // clearAppData();
       try {
         const token = await AsyncStorage.getItem("token");
         const formData = createFormData(userInfo);
         if (!token) {
-          console.log("login again ! invalid Credentials");
+          showToast("error", "login again ! invalid Credentials");
         }
         const response = await axios.put(
           `${env.API_BASE_URL}/profilesetup`,
@@ -109,17 +99,14 @@ const FooterProfileSetup = ({
             },
           }
         );
-        if (response?.data) {
+        if (response?.data && response.status === 200) {
           const data = response?.data?.UserProfileSetup;
-          dispatch(login({ user: JSON.stringify(data), token }));
+          dispatch(login({ user: data, token }));
           await AsyncStorage.setItem("user", JSON.stringify(data));
-          // navigation.replace("Home");
-          console.log("response" + JSON.stringify(data), "token " + token);
-        } else {
-          console.log("failed to retrive data or save data");
         }
       } catch (err) {
-        console.log("error" + err);
+        console.log(err);
+        showToast("error", "Unable to Save data Try Again !!" + err);
       }
     }
   };

@@ -1,12 +1,11 @@
+import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
   Text,
   View,
   TouchableOpacity,
-  Alert,
   ScrollView,
 } from "react-native";
-import React, { useState } from "react";
 import Logo from "../../Components/Logo.jsx";
 import { GradientButton } from "../../Components/Gradient.jsx";
 import InputField from "../../Components/InputField.jsx";
@@ -23,18 +22,22 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useDispatch } from "react-redux";
 import { login } from "../../Store/Slice/Auth.jsx";
 import axios from "axios";
+import { showToast } from "../../Components/showToast.jsx";
 
 const Login = ({ navigation }) => {
   const dispatch = useDispatch();
   const { isDark } = useDarkMode();
+
   const [email, setEmail] = useState("");
-  const [emailVerify, setEmailVerify] = useState(null);
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const [emailVerify, setEmailVerify] = useState(null);
   const [passwordVerify, setPasswordVerify] = useState(null);
 
   function handleEmail(e) {
     setEmail(e);
-    if (e.length == 0) {
+    if (e.length === 0) {
       setEmailVerify(null);
     } else if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)) {
       setEmailVerify(true);
@@ -42,9 +45,10 @@ const Login = ({ navigation }) => {
       setEmailVerify(false);
     }
   }
+
   function handlePassword(e) {
     setPassword(e);
-    if (e.length == 0) {
+    if (e.length === 0) {
       setPasswordVerify(null);
     } else if (e.length >= 8) {
       setPasswordVerify(true);
@@ -53,37 +57,48 @@ const Login = ({ navigation }) => {
     }
   }
 
-  const [msg, setMsg] = useState(""); // from api get data
-
   const handleLogin = async () => {
     if (!emailVerify || !passwordVerify) {
-      setMsg("Please enter valid email and password");
+      showToast("error", "Enter a valid Email and Password!");
       return;
     }
 
-    setMsg("");
+    setLoading(true);
 
     try {
       const response = await axios.post(`${env.API_BASE_URL}/login`, {
-        email: email,
-        password: password,
+        email,
+        password,
       });
 
       if (response.status === 200) {
         const data = response.data;
-        console.log("form login ", data.user);
         await AsyncStorage.setItem("token", data.token);
         await AsyncStorage.setItem("user", JSON.stringify(data.user));
-        console.log(data.user);
         dispatch(login({ user: data.user, token: data.token }));
-        Alert.alert("Success", `${data.msg}`);
+
+        showToast("success", "Login successful!");
       } else {
-        console.log("data from login", response.data);
-        setMsg("Invalid credentials");
+        showToast("error", "Invalid credentials, try again!");
       }
     } catch (error) {
-      console.warn("Login Error:", error.response.data);
-      setMsg(error.response?.data?.error || "Something went wrong");
+      console.error("Login Error:", error.response?.data || error.message);
+      if (error.response) {
+        if (error.response.status === 401) {
+          showToast("error", "Incorrect email or password!");
+        } else if (error.response.status === 500) {
+          showToast("error", "Server error! Please try again later.");
+        } else {
+          showToast(
+            "error",
+            error.response?.data?.error || "Something went wrong!"
+          );
+        }
+      } else {
+        showToast("error", "Network error! Check your internet connection.");
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -91,7 +106,6 @@ const Login = ({ navigation }) => {
     <ScrollView
       keyboardShouldPersistTaps="handled"
       showsVerticalScrollIndicator={false}
-      edges={["top"]}
       style={[
         {
           backgroundColor: isDark
@@ -135,22 +149,10 @@ const Login = ({ navigation }) => {
           isDark={isDark}
           verify={passwordVerify}
         />
-        {msg && (
-          <Text
-            style={{
-              textAlign: "center",
-              color: "red",
-              textTransform: "capitalize",
-            }}
-          >
-            {msg}
-          </Text>
-        )}
+
         <TouchableOpacity
           style={{ alignSelf: "flex-end", marginVertical: 5 }}
-          onPress={() => {
-            navigation.navigate("Forget");
-          }}
+          onPress={() => navigation.navigate("Forget")}
         >
           <Text style={{ color: Theme.primary }}>Forgot password ?</Text>
         </TouchableOpacity>
@@ -159,6 +161,7 @@ const Login = ({ navigation }) => {
           name="Login"
           wi={responsiveWidth(90)}
           onPress={handleLogin}
+          disabled={loading}
         />
 
         <View
@@ -182,14 +185,9 @@ const Login = ({ navigation }) => {
           }}
         >
           <Text style={isDark && { color: Theme.dark.text }}>
-            Don't have account ?
+            Don't have an account?
           </Text>
-          <TouchableOpacity
-            onPress={() => {
-              navigation.navigate("Signup");
-            }}
-            style={{ alignSelf: "flex-end", marginVertical: 5 }}
-          >
+          <TouchableOpacity onPress={() => navigation.navigate("Signup")}>
             <Text style={{ color: Theme.primary }}>Register</Text>
           </TouchableOpacity>
         </View>
@@ -217,8 +215,12 @@ const styles = StyleSheet.create({
   },
   textTitle: {
     fontSize: responsiveFontSize(3.5),
-    fontWeight: 600,
+    fontWeight: "600",
     textAlign: "center",
   },
-  textPara: { opacity: 0.7, fontSize: responsiveFontSize(2), marginBottom: 5 },
+  textPara: {
+    opacity: 0.7,
+    fontSize: responsiveFontSize(2),
+    marginBottom: 5,
+  },
 });

@@ -20,18 +20,20 @@ import {
   responsiveFontSize,
 } from "react-native-responsive-dimensions";
 import axios from "axios";
+import { showToast } from "../../Components/showToast.jsx";
 
 const ForgetPassword = ({ navigation }) => {
   const { isDark } = useDarkMode();
   const [email, setEmail] = useState("");
   const [visible, setVisible] = useState(false);
-  const [msg, setMsg] = useState("");
+  const [loading, setLoading] = useState();
   const handelForget = async () => {
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      setMsg("Invalid email format");
+      showToast("error", "Enter Valid Email !!");
       return;
     }
     try {
+      setLoading(true);
       const response = await axios.post(`${env.API_BASE_URL}/forgetpassword`, {
         email,
       });
@@ -41,8 +43,10 @@ const ForgetPassword = ({ navigation }) => {
       }
     } catch (error) {
       console.log(error.response);
+    } finally {
+      setLoading(false);
+      setVisible(true);
     }
-    setVisible(true);
   };
   return (
     <ScrollView
@@ -100,9 +104,7 @@ const ForgetPassword = ({ navigation }) => {
           setValue={setEmail}
           isDark={isDark}
         />
-        {msg && (
-          <Text style={{ color: "red", textAlign: "center" }}>{msg}</Text>
-        )}
+
         <View
           style={{
             position: "absolute",

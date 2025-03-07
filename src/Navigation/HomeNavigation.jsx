@@ -2,10 +2,10 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Icon from "@expo/vector-icons/Ionicons";
 import { Theme } from "../Constant/Theme";
 import { useDarkMode } from "../provider/DarkModeProvider";
-import { View, Text, Button } from "react-native";
+import { View, Text } from "react-native";
 import { useDispatch } from "react-redux";
-import { logout } from "../Store/Slice/Auth";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+
+import Logout from "../Components/LogoutButton";
 const Tab = createBottomTabNavigator();
 
 const getTabBarIcon = (routeName, focused, size) => {
@@ -76,31 +76,18 @@ const SettingNavigation = () => {
       }}
     >
       <Text>Setting Navigation</Text>
-      <Button
-        title="clear app data"
-        onPress={() => {
-          clearAppData();
-          dispatch(logout());
-        }}
-      />
+      <Logout />
     </View>
   );
 };
-const clearAppData = async () => {
-  try {
-    await AsyncStorage.clear();
-    console.log("App data cleared");
-  } catch (e) {
-    console.error("Failed to clear app data", e);
-  }
-};
+
 const HomeNavigation = () => {
   const { isDark } = useDarkMode();
   return (
     <Tab.Navigator
       initialRouteName="Profile"
       screenOptions={({ route }) => ({
-        // tabBarLabel: false,
+        tabBarShowLabel: false,
         tabBarActiveTintColor: Theme.primary,
         tabBarStyle: {
           borderColor: isDark ? Theme.dark.background : Theme.light.background,

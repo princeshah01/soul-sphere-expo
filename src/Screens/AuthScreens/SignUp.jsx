@@ -13,6 +13,8 @@ import {
   responsiveFontSize,
 } from "react-native-responsive-dimensions";
 import axios from "axios";
+import Toast from "react-native-toast-message";
+import { showToast } from "../../Components/showToast.jsx";
 
 const Signup = ({ navigation }) => {
   const { isDark } = useDarkMode();
@@ -24,81 +26,62 @@ const Signup = ({ navigation }) => {
   const [confirmPasswordVerify, setConfirmPasswordVerify] = useState(null);
   const [password, setPassword] = useState("");
   const [passwordVerify, setPasswordVerify] = useState(null);
-  const [msg, setMsg] = useState("");
   const [fullName, setFullName] = useState("");
   const [nameVerify, setNameVerify] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   function handleName(e) {
     setFullName(e);
-    if (e.length == 0) {
-      setNameVerify(null);
-    } else if (e.length >= 4) {
-      setNameVerify(true);
-    } else {
-      setNameVerify(false);
-    }
+    setNameVerify(e.length >= 4 ? true : e.length === 0 ? null : false);
   }
 
   function handlePassword(e) {
     setPassword(e);
-    if (e.length == 0) {
-      setPasswordVerify(null);
-    } else if (e.length >= 8) {
-      setPasswordVerify(true);
-    } else {
-      setPasswordVerify(false);
-    }
+    setPasswordVerify(e.length >= 8 ? true : e.length === 0 ? null : false);
   }
+
   function handleConfirmPassword(e) {
     setConfirmPassword(e);
-    if (e.length == 0) {
-      setConfirmPasswordVerify(null);
-    } else if (e.length >= 8) {
-      setConfirmPasswordVerify(true);
-    } else {
-      setConfirmPasswordVerify(false);
-    }
+    setConfirmPasswordVerify(
+      e.length >= 8 ? true : e.length === 0 ? null : false
+    );
   }
+
   function handleUsername(e) {
     setUserName(e);
-    if (e.length == 0) {
-      setUserNameVerify(null);
-    } else if (e.length >= 5) {
-      setUserNameVerify(true);
-    } else {
-      setUserNameVerify(false);
-    }
+    setUserNameVerify(e.length >= 5 ? true : e.length === 0 ? null : false);
   }
+
   function handleEmail(e) {
     setEmail(e);
-    if (e.length == 0) {
-      setEmailVerify(null);
-    } else if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)) {
-      setEmailVerify(true);
-    } else {
-      setEmailVerify(false);
-    }
+    setEmailVerify(
+      /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)
+        ? true
+        : e.length === 0
+        ? null
+        : false
+    );
   }
 
   const handleSignup = async () => {
-    setMsg("");
     if (
-      !(
-        userNameVerify &&
-        emailVerify &&
-        passwordVerify &&
-        confirmPasswordVerify &&
-        nameVerify
-      )
+      !userNameVerify ||
+      !emailVerify ||
+      !passwordVerify ||
+      !confirmPasswordVerify ||
+      !nameVerify
     ) {
-      setMsg("Please enter valid Details");
+      showToast("error", "Please enter valid details!");
       return;
     }
 
     if (password !== confirmPassword) {
-      setMsg("Passwords do not match");
+      showToast("error", "Passwords do not match!");
       return;
     }
+
+    setLoading(true);
+
     try {
       const response = await axios.post(`${env.API_BASE_URL}/signup`, {
         userName,
@@ -107,14 +90,28 @@ const Signup = ({ navigation }) => {
         password,
       });
 
-      if (response.status == 200) {
-        console.log("signup success fully");
-        console.log(response.data);
-        Alert.alert("Read It Carefully", `${response.data.message}`);
-        navigation.navigate("Login");
+      if (response.status === 200) {
+        console.log("Signup successful", response.data);
+        showToast(
+          "success",
+          response.data.message2 || "Account created successfully!"
+        );
+
+        const alert = setTimeout(() => {
+          navigation.navigate("Login");
+          Alert.alert("Read It Carefully", response.data.message);
+        }, 1800);
       }
     } catch (error) {
-      setMsg(error?.response?.data?.error);
+      console.error("Signup Error:", error.response?.data || error.message);
+
+      if (error.response) {
+        showToast("error", error.response?.data?.error || "Signup failed!");
+      } else {
+        showToast("error", "Network error! Check your internet connection.");
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -122,7 +119,6 @@ const Signup = ({ navigation }) => {
     <ScrollView
       keyboardShouldPersistTaps="handled"
       showsVerticalScrollIndicator={false}
-      edges={["top"]}
       style={[
         {
           backgroundColor: isDark
@@ -136,11 +132,13 @@ const Signup = ({ navigation }) => {
       <View style={styles.logo}>
         <Logo size="80" />
       </View>
+
       <BackButton
         isDark={isDark}
         navigation={navigation}
         style={{ position: "absolute", top: 20, left: 20 }}
       />
+
       <View style={styles.innerContainer}>
         <View style={{ alignSelf: "center" }}>
           <Text
@@ -149,7 +147,7 @@ const Signup = ({ navigation }) => {
             Register
           </Text>
           <Text style={[styles.textPara, isDark && { color: Theme.dark.text }]}>
-            Enter your personal Information.
+            Enter your personal information.
           </Text>
         </View>
 
@@ -195,24 +193,15 @@ const Signup = ({ navigation }) => {
           isDark={isDark}
           verify={confirmPasswordVerify}
         />
-
-        <Text
-          style={{
-            textAlign: "center",
-            color: "red",
-            textTransform: "capitalize",
-            fontSize: responsiveFontSize(1.5),
-          }}
-        >
-          {msg}
-        </Text>
       </View>
+
       <GradientButton
         onPress={handleSignup}
         name="Register"
+        disabled={loading}
         styleByProp={{
           width: responsiveWidth(90),
-          //   marginTop: responsiveHeight(1.8),
+          marginTop: responsiveHeight(1.8),
         }}
       />
     </ScrollView>
@@ -234,7 +223,6 @@ const styles = StyleSheet.create({
     width: responsiveWidth(100),
     height: responsiveHeight(100),
   },
-
   innerContainer: {
     width: "90%",
     gap: 10,
@@ -243,8 +231,12 @@ const styles = StyleSheet.create({
   },
   textTitle: {
     fontSize: responsiveFontSize(3.5),
-    fontWeight: 600,
+    fontWeight: "600",
     textAlign: "center",
   },
-  textPara: { opacity: 0.7, fontSize: responsiveFontSize(2), marginBottom: 5 },
+  textPara: {
+    opacity: 0.7,
+    fontSize: responsiveFontSize(2),
+    marginBottom: 5,
+  },
 });

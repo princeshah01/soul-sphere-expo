@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Text, View } from "react-native";
 import Logo from "../../Components/Logo";
 import {
@@ -8,10 +8,9 @@ import {
 } from "react-native-responsive-dimensions";
 import { useDarkMode } from "../../provider/DarkModeProvider";
 import { Theme } from "../../Constant/Theme";
+import Logout from "../../Components/LogoutButton";
+
 const ProfileSetupHeader = ({ currentIndex }) => {
-  const [dob, setDob] = useState();
-  const [bio, setBio] = useState();
-  const [gender, setGender] = useState();
   const { isDark } = useDarkMode();
   return (
     <View
@@ -27,21 +26,25 @@ const ProfileSetupHeader = ({ currentIndex }) => {
         style={{
           flexDirection: "row",
           alignItems: "center",
+          justifyContent: "space-between",
           gap: 10,
           marginTop: 10,
           marginHorizontal: 20,
         }}
       >
-        <Logo size={responsiveFontSize(4)} />
-        <Text
-          style={{
-            fontSize: responsiveFontSize(3),
-            fontWeight: 600,
-            color: isDark ? Theme.dark.text : Theme.light.text,
-          }}
-        >
-          Profile Setup
-        </Text>
+        <View style={{ flexDirection: "row", gap: 10 }}>
+          <Logo size={responsiveFontSize(4)} />
+          <Text
+            style={{
+              fontSize: responsiveFontSize(3),
+              fontWeight: 600,
+              color: isDark ? Theme.dark.text : Theme.light.text,
+            }}
+          >
+            Profile Setup
+          </Text>
+        </View>
+        <Logout />
       </View>
       <View
         style={{

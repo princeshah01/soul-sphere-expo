@@ -80,9 +80,3 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 });
-
-// const updatedInterests = interests.map((interest) =>
-//   interest.id === id
-//     ? { ...interest, selected: !interest.selected }
-//     : interest
-// );

@@ -7,7 +7,7 @@ import pageData from "./pages/ProfileSetupPageData";
 import { responsiveWidth } from "react-native-responsive-dimensions";
 import FooterProfileSetup from "./FooterProfileSetup";
 
-const ProfileSetup = ({ navigation }) => {
+const ProfileSetup = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const flatListRef = useRef(null);
   const { isDark } = useDarkMode();
@@ -68,41 +68,9 @@ const ProfileSetup = ({ navigation }) => {
         data={pageData}
         flatListRef={flatListRef}
         userInfo={userInfo}
-        navigation={navigation}
       />
     </View>
   );
 };
 
 export default ProfileSetup;
-
-{
-  /* <SafeAreaView
-style={[
-  { flex: 1, backgroundColor: "white" },
-  isDark && { backgroundColor: Theme.dark.background },
-]}
->
-<FlatList
-  ref={flatListRef}
-  horizontal
-  pagingEnabled
-  showsHorizontalScrollIndicator={false}
-  data={onboardingData}
-  renderItem={({ item }) => <Slide isDark={isDark} item={item} />}
-  keyExtractor={(item, index) => `${item.id}_${index}`}
-  onScroll={(event) => {
-    const offsetX = event.nativeEvent.contentOffset.x;
-    const newIndex = Math.round(offsetX / width);
-    setCurrentIndex(newIndex);
-  }}
-  scrollEventThrottle={32}
-/>
-<Footer
-  currentIndex={currentIndex}
-  data={onboardingData}
-  flatListRef={flatListRef}
-  onFinish={onFinish}
-/>
-</SafeAreaView> */
-}

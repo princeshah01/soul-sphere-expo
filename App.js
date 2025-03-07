@@ -1,7 +1,7 @@
 import { StatusBar } from "expo-status-bar";
 import AppNavigation from "./src/Navigation/AppNavigation";
 import { NavigationContainer } from "@react-navigation/native";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import DarkModeProvider from "./src/provider/DarkModeProvider";
 import { useDarkMode } from "./src/provider/DarkModeProvider";
 import { Provider } from "react-redux";
@@ -11,37 +11,56 @@ import { useSelector, useDispatch } from "react-redux";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { login } from "./src/Store/Slice/Auth";
 import { Theme } from "./src/Constant/Theme";
+import Toast from "react-native-toast-message";
+
 function MainApp() {
   const Auth = useSelector((store) => store.Auth.isAuthenticated);
   const dispatch = useDispatch();
+
   useEffect(() => {
-    const GetDataFormLocal = async () => {
+    const getDataFromLocal = async () => {
       try {
         const token = await AsyncStorage.getItem("token");
         const user = await AsyncStorage.getItem("user");
+
         if (token && user) {
+          const parsedUser = JSON.parse(user);
           dispatch(
             login({
               token: token,
-              user: JSON.parse(user),
+              user: parsedUser,
               isAuthenticated: true,
             })
           );
+          console.log("User data restored: ", parsedUser);
+        } else {
+          console.log("No user");
         }
-        dispatch(login(data));
-      } catch (err) { }
+      } catch (err) {
+        console.error("retrieving error", err);
+      }
     };
-    GetDataFormLocal();
-  }, []);
 
-  //subscribing to auth slice of store
+    getDataFromLocal();
+  }, [dispatch]);
+  //  dispatch in dependsncy array will make sure that this will only called when this component rerenders
 
+  // Subscribing to Auth slice of store
   const { isDark } = useDarkMode();
+
   return (
-    <NavigationContainer>
-      {Auth ? <AppNavigation /> : <AuthNavigation />}
-      <StatusBar style={isDark ? "light" : "dark"} backgroundColor={isDark ? Theme.dark.background : Theme.light.background} />
-    </NavigationContainer>
+    <>
+      <NavigationContainer>
+        {Auth ? <AppNavigation /> : <AuthNavigation />}
+        <StatusBar
+          style={isDark ? "light" : "dark"}
+          backgroundColor={
+            isDark ? Theme.dark.background : Theme.light.background
+          }
+        />
+      </NavigationContainer>
+      <Toast />
+    </>
   );
 }
 
