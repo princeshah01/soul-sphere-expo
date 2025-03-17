@@ -4,13 +4,16 @@ import {
   View,
   TouchableOpacity,
   FlatList,
+  ActivityIndicator,
 } from "react-native";
 import Icon from "@expo/vector-icons/AntDesign";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Theme } from "../../../Constant/Theme";
 import { useDarkMode } from "../../../provider/DarkModeProvider";
 import BackButton from "../../../Components/BackButton";
-
+import axios from "axios";
+import env from "../../../Constant/env";
+import { useSelector } from "react-redux";
 const FaqCard = ({ item, toggleExpand, expanded, isDark }) => {
   return (
     <TouchableOpacity
@@ -56,58 +59,27 @@ const FaqCard = ({ item, toggleExpand, expanded, isDark }) => {
 };
 
 const Help = ({ navigation }) => {
+  const token = useSelector((store) => store.Auth.token);
   const [expanded, setExpanded] = useState(null);
   const { isDark } = useDarkMode();
-  const faqData = [
-    {
-      id: "1",
-      question: "How do I create an account?",
-      answer:
-        "To create an account, download the app, sign up using your email or phone number, and complete your profile.",
-    },
-    {
-      id: "2",
-      question: "How do I edit my profile?",
-      answer:
-        "Go to the 'Profile' section, tap on 'Edit Profile', and update your details, including bio, photos, and preferences.",
-    },
-    {
-      id: "3",
-      question: "How can I match with someone?",
-      answer:
-        "You can swipe right on profiles you like. If the other person also swipes right, it's a match, and you can start chatting!",
-    },
-    {
-      id: "4",
-      question: "How do I report a user?",
-      answer:
-        "To report a user, go to their profile, tap on the three-dot menu, and select 'Report'. Choose a reason and submit.",
-    },
-    {
-      id: "5",
-      question: "How do I delete my account?",
-      answer:
-        "Go to Settings > Account > Delete Account. Follow the instructions to permanently remove your profile.",
-    },
-    {
-      id: "6",
-      question: "How to unsubscribe from premium?",
-      answer:
-        "To unsubscribe, go to Settings > Subscription, and cancel your plan through the App Store or Google Play Store.",
-    },
-    {
-      id: "7",
-      question: "Can I hide my profile from others?",
-      answer:
-        "Yes, you can enable 'Incognito Mode' in Settings to browse profiles without appearing in recommendations.",
-    },
-    {
-      id: "8",
-      question: "How do I change my match preferences?",
-      answer:
-        "Go to Settings > Match Preferences and update filters like age range, distance, and interests.",
-    },
-  ];
+  const [faqData, setFaqData] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  useEffect(() => {
+    const getFaqData = async () => {
+      try {
+        const response = await axios.get(env.API_BASE_URL + "/faq", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setFaqData(response.data.faqData);
+        setIsLoading(false);
+      } catch (err) {
+        console.log(err + "while fetching data");
+      }
+    };
+    getFaqData();
+  }, []);
 
   const toggleExpand = (id) => {
     setExpanded(expanded === id ? null : id);
@@ -135,7 +107,7 @@ const Help = ({ navigation }) => {
       <Text
         style={{
           textAlign: "center",
-          paddingVertical: 10,
+          paddingVertical: 20,
           fontSize: 18,
           fontWeight: 500,
           color: Theme.primary,
@@ -143,19 +115,33 @@ const Help = ({ navigation }) => {
       >
         FAQ
       </Text>
-
-      <FlatList
-        data={faqData}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <FaqCard
-            isDark={isDark}
-            item={item}
-            toggleExpand={toggleExpand}
-            expanded={expanded}
-          />
-        )}
-      />
+      {isLoading ? (
+        <View
+          style={{
+            flex: 1,
+            backgroundColor: isDark
+              ? Theme.dark.background
+              : Theme.light.background,
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <ActivityIndicator size={30} />
+        </View>
+      ) : (
+        <FlatList
+          data={faqData}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => (
+            <FaqCard
+              isDark={isDark}
+              item={item}
+              toggleExpand={toggleExpand}
+              expanded={expanded}
+            />
+          )}
+        />
+      )}
     </View>
   );
 };

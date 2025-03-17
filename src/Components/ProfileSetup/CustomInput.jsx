@@ -45,6 +45,7 @@ const CustomInput = ({
             borderColor: Theme.dark.border,
             backgroundColor: Theme.dark.background,
           },
+          !isEditable && styles.disabledInput,
         ]}
       >
         <Icon
@@ -108,5 +109,8 @@ const styles = StyleSheet.create({
     backgroundColor: Theme.light.background,
     gap: 10,
     elevation: 3,
+  },
+  disabledInput: {
+    opacity: 0.7,
   },
 });

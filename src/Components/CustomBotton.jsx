@@ -1,6 +1,7 @@
 import { StyleSheet, Text, TouchableOpacity } from "react-native";
 
 const CustomButton = ({
+  children,
   name,
   onPress,
   outline = false,
@@ -18,7 +19,10 @@ const CustomButton = ({
         { ...style },
       ]}
     >
-      <Text style={[styles.text, outline && styles.outlineText]}>{name}</Text>
+      {name && (
+        <Text style={[styles.text, outline && styles.outlineText]}>{name}</Text>
+      )}
+      {children}
     </TouchableOpacity>
   );
 };

@@ -23,7 +23,7 @@ const CustomGenderDrop = ({
   const { isDark } = useDarkMode();
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, !editable && styles.disabled]}>
       <Dropdown
         renderLeftIcon={() => {
           const selectedItem = genderOptions.find(
@@ -40,9 +40,8 @@ const CustomGenderDrop = ({
         }}
         style={[
           styles.input,
-          !editable && styles.disabled,
           isDark && styles.darkInput,
-          style,
+          !editable && styles.disabledInput,
         ]}
         iconStyle={{ color: isDark ? Theme.dark.text : Theme.light.text }}
         placeholder={placeholder || "Select Gender"}
@@ -102,7 +101,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     fontSize: 16,
     width: width * 0.75, // Slightly wider for better UI
-    elevation: 3,
+    elevation: 2,
     flexDirection: "row",
     alignItems: "center",
   },
@@ -111,15 +110,15 @@ const styles = StyleSheet.create({
     backgroundColor: Theme.dark.background,
   },
   disabled: {
-    opacity: 0.6,
+    opacity: 0.7,
   },
   placeholderStyle: {
     fontSize: 16,
     color: "#888",
   },
   selectedTextStyle: {
-    fontSize: 16,
-    fontWeight: "500",
+    fontSize: 14,
+    fontWeight: "600",
   },
   dropdownContainer: {
     borderWidth: 1,
@@ -139,5 +138,8 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 16,
     gap: 10,
+  },
+  disabledInput: {
+    opacity: 0.7,
   },
 });

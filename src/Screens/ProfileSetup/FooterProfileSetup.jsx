@@ -1,4 +1,4 @@
-import { Alert, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import CustomButton from "../../Components/CustomBotton";
 import React from "react";
 import { responsiveWidth } from "react-native-responsive-dimensions";
@@ -7,9 +7,9 @@ import env from "../../Constant/env";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useDispatch } from "react-redux";
 import { login } from "../../Store/Slice/Auth";
-import { useSelector } from "react-redux";
-import Toast from "react-native-toast-message";
 import { showToast } from "../../Components/showToast";
+import Icon from "@expo/vector-icons/Ionicons";
+import { Theme } from "../../Constant/Theme";
 
 const createFormData = (data) => {
   let formData = new FormData();
@@ -53,19 +53,21 @@ const createFormData = (data) => {
   return formData;
 };
 
-const FooterProfileSetup = ({ currentIndex, data, flatListRef, userInfo }) => {
-  const user = useSelector((store) => store.Auth.user);
+const FooterProfileSetup = ({
+  currentIndex,
+  data,
+  flatListRef,
+  userInfo,
+  setCurrentIndex,
+}) => {
   const dispatch = useDispatch();
   const HandleNext = async () => {
-    console.log(currentIndex + "component index");
-    const nextIndex = currentIndex + 1;
-    if (nextIndex < data.length) {
-      const nextOffset = nextIndex * responsiveWidth(100);
-
-      flatListRef.current.scrollToOffset({
-        offset: nextOffset,
+    if (currentIndex < data.length - 1) {
+      flatListRef.current?.scrollToIndex({
+        index: currentIndex + 1,
         animated: true,
       });
+      setCurrentIndex(currentIndex + 1);
     } else if (
       !(
         userInfo.gender &&
@@ -100,6 +102,7 @@ const FooterProfileSetup = ({ currentIndex, data, flatListRef, userInfo }) => {
           }
         );
         if (response?.data && response.status === 200) {
+          showToast("success", response?.data?.message);
           const data = response?.data?.UserProfileSetup;
           dispatch(login({ user: data, token }));
           await AsyncStorage.setItem("user", JSON.stringify(data));
@@ -111,14 +114,12 @@ const FooterProfileSetup = ({ currentIndex, data, flatListRef, userInfo }) => {
     }
   };
   const HandleBack = () => {
-    const prevIndex = currentIndex - 1;
-    if (prevIndex >= 0 && flatListRef?.current) {
-      const prevOffset = prevIndex * responsiveWidth(100);
-
-      flatListRef.current.scrollToOffset({
-        offset: prevOffset,
+    if (currentIndex > 0) {
+      flatListRef.current?.scrollToIndex({
+        index: currentIndex - 1,
         animated: true,
       });
+      setCurrentIndex(currentIndex - 1);
     }
   };
 
@@ -133,16 +134,26 @@ const FooterProfileSetup = ({ currentIndex, data, flatListRef, userInfo }) => {
       }}
     >
       <CustomButton
-        name="Back"
+        // name="Back"
         outline={true}
         onPress={HandleBack}
         isDisabled={currentIndex == 0}
-      />
+      >
+        <Icon name="chevron-back-outline" size={20} color={Theme.primary} />
+      </CustomButton>
 
       <CustomButton
-        name={currentIndex == data.length - 1 ? "Done" : "Next"}
+        name={currentIndex == data.length - 1 && "Done"}
         onPress={HandleNext}
-      />
+      >
+        {currentIndex != data.length - 1 && (
+          <Icon
+            name="chevron-forward-outline"
+            size={20}
+            color={Theme.light.background}
+          />
+        )}
+      </CustomButton>
     </View>
   );
 };

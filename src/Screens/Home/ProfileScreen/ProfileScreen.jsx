@@ -9,7 +9,6 @@ import { Theme } from "../../../Constant/Theme";
 import Header from "../../ProfileSetup/Header";
 const { width, height } = Dimensions.get("window");
 import { useSelector } from "react-redux";
-import env from "../../../Constant/env";
 
 const ProfileScreen = ({ navigation }) => {
   const { fullName, profilePicture } = useSelector((store) => store.Auth.user);
@@ -29,10 +28,7 @@ const ProfileScreen = ({ navigation }) => {
     >
       <Header name="Profile" />
       <View style={{ height: height * 0.4, backgroundColor: "transparent" }}>
-        <ProfileImage
-          profilePicture={env.API_BASE_URL + profilePicture}
-          size={150}
-        />
+        <ProfileImage profilePicture={profilePicture} size={150} />
         {/* profile address */}
         <Text
           style={[

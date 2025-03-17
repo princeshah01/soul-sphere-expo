@@ -1,13 +1,70 @@
-import { StyleSheet, Text, View } from "react-native";
-import React from "react";
+import {
+  StyleSheet,
+  Text,
+  View,
+  ScrollView,
+  TextInput,
+  TouchableOpacity,
+} from "react-native";
+import React, { useEffect, useState } from "react";
 import BackButton from "../../../Components/BackButton";
 import { useDarkMode } from "../../../provider/DarkModeProvider";
 import { Theme } from "../../../Constant/Theme";
+import {
+  responsiveHeight,
+  responsiveFontSize,
+} from "react-native-responsive-dimensions";
+import { GradientButton } from "../../../Components/Gradient";
+import axios from "axios";
+import env from "../../../Constant/env";
+import { showToast } from "../../../Components/showToast";
+import { ActivityIndicator } from "react-native-paper";
+import { useSelector } from "react-redux";
+import CustomModal from "../../../Components/CustomModal";
 const Contact = ({ navigation }) => {
+  const [modalView, setModalView] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [IssueTypes, setIssueTypes] = useState(null);
+  const [SelectedIssue, setSelectedIssue] = useState("");
+  console.log(SelectedIssue);
+  const token = useSelector((store) => store.Auth.token);
+  async function getIssueType() {
+    try {
+      let res = await axios.get(env.API_BASE_URL + "/issueType", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (res.status === 200 && res.data) {
+        setIssueTypes(res?.data?.data);
+        setIsLoading(false);
+      }
+    } catch (err) {
+      showToast("error", "Fetching data error " + err.message);
+    } finally {
+    }
+  }
+  useEffect(() => {
+    getIssueType();
+  }, []);
   const { isDark } = useDarkMode();
-  return (
+  const handle
+  return isLoading ? (
     <View
       style={{
+        flex: 1,
+        justifyContent: "center",
+        alignContent: "center",
+        backgroundColor: isDark
+          ? Theme.dark.background
+          : Theme.light.background,
+      }}
+    >
+      <ActivityIndicator />
+    </View>
+  ) : (
+    <ScrollView
+      contentContainerStyle={{
         flex: 1,
         padding: 20,
         backgroundColor: isDark
@@ -15,34 +72,155 @@ const Contact = ({ navigation }) => {
           : Theme.light.background,
       }}
     >
+      <CustomModal
+        visible={modalView}
+        text1="Confirm Your Issue Submission"
+        text2={`Are you sure you want to submit this issue? Our support team will review your request and respond as soon as possible.`}
+      />
       <View style={styles.header}>
-        <BackButton navigation={navigation} isDark={isDark} />
-        <Text
-          style={[
-            styles.title,
-            { color: isDark ? Theme.dark.text : Theme.light.text },
-          ]}
+        <View style={{ flexDirection: "row" }}>
+          <BackButton navigation={navigation} isDark={isDark} />
+          <Text
+            style={[
+              styles.title,
+              { color: isDark ? Theme.dark.text : Theme.light.text },
+            ]}
+          >
+            Support
+          </Text>
+        </View>
+        <TouchableOpacity
+          style={{
+            borderWidth: 1,
+            borderColor: Theme.primary,
+            padding: 5,
+            borderRadius: 20,
+          }}
         >
-          Support
-        </Text>
+          <Text style={{ color: Theme.primary }}>Help History</Text>
+        </TouchableOpacity>
       </View>
-
-      <Text
-        style={{
-          fontSize: 20,
-          color: isDark ? Theme.dark.text : Theme.light.text,
+      <View
+        keyboardShouldPersistTaps="handled"
+        contentContainerStyle={{
+          backgroundColor: isDark
+            ? Theme.dark.background
+            : Theme.light.background,
+          flex: 1,
+          justifyContent: "",
         }}
       >
-        contact info will be here
-      </Text>
-    </View>
+        <Text
+          style={{
+            fontSize: responsiveFontSize(2.1),
+            fontWeight: 600,
+            color: isDark ? Theme.light.border : Theme.dark.border,
+          }}
+        >
+          Issue Type
+        </Text>
+        <View
+          style={{
+            flexDirection: "row",
+            flexWrap: "wrap",
+            gap: 10,
+            paddingVertical: responsiveHeight(2),
+          }}
+        >
+          {IssueTypes &&
+            IssueTypes.map((item, idx) => {
+              return item === SelectedIssue ? (
+                <TouchableOpacity
+                  onPress={() => {
+                    setSelectedIssue(item);
+                  }}
+                  style={{
+                    borderWidth: 1,
+                    padding: 6,
+                    borderRadius: 15,
+                    borderColor: Theme.primary,
+                    backgroundColor: Theme.primary,
+                  }}
+                  key={`${idx}${item}`}
+                >
+                  <Text
+                    style={{
+                      color: isDark
+                        ? Theme.dark.background
+                        : Theme.light.background,
+                    }}
+                  >
+                    {item}
+                  </Text>
+                </TouchableOpacity>
+              ) : (
+                <TouchableOpacity
+                  onPress={() => {
+                    setSelectedIssue(item);
+                  }}
+                  style={{
+                    borderWidth: 1,
+                    padding: 6,
+                    borderRadius: 15,
+                    borderColor: Theme.primary,
+                  }}
+                  key={`${idx}${item}`}
+                >
+                  <Text style={{ color: Theme.primary }}>{item}</Text>
+                </TouchableOpacity>
+              );
+            })}
+        </View>
+        <View
+          style={{
+            height: responsiveHeight(38),
+            justifyContent: "space-around",
+          }}
+        >
+          <View />
+          <View
+            style={{
+              borderWidth: 3,
+              height: responsiveHeight(20),
+              borderRadius: 20,
+              overflow: "hidden",
+              borderColor: isDark ? Theme.dark.border : Theme.light.border,
+
+              padding: 10,
+            }}
+          >
+            <TextInput
+              multiline={true}
+              numberOfLines={10}
+              maxLength={100}
+              style={{
+                fontSize: responsiveFontSize(2),
+                justifyContent: "flex-start",
+                alignItems: "flex-start",
+                color: isDark ? Theme.dark.text : Theme.light.text,
+              }}
+              placeholder="Facing an issue? Let us know!"
+              placeholderTextColor={
+                isDark ? Theme.dark.text + "99" : Theme.light.text + "99"
+              }
+            />
+          </View>
+          <GradientButton name="Submit" />
+        </View>
+      </View>
+    </ScrollView>
   );
 };
 
 export default Contact;
 
 const styles = StyleSheet.create({
-  header: { flexDirection: "row", alignItems: "center", marginBottom: 15 },
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 15,
+    justifyContent: "space-between",
+  },
   backButton: { backgroundColor: "#F5F7F8", padding: 5, borderRadius: 12 },
   title: { fontSize: 22, fontWeight: "600", marginLeft: 15 },
 });

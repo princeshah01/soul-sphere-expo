@@ -62,22 +62,6 @@ const ChitChat = () => {
     </View>
   );
 };
-// const SettingNavigation = () => {
-//   const dispatch = useDispatch();
-//   return (
-//     <View
-//       style={{
-//         flex: 1,
-//         backgroundColor: Theme.light.background,
-//         justifyContent: "center",
-//         alignItems: "center",
-//       }}
-//     >
-//       <Text>Setting Navigation</Text>
-//       <Logout />
-//     </View>
-//   );
-// };
 
 const HomeNavigation = () => {
   const { isDark } = useDarkMode();
