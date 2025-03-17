@@ -33,6 +33,7 @@ const CustomDatePicker = ({ value, setValue, editable = false }) => {
             borderColor: Theme.dark.border,
             backgroundColor: Theme.dark.background,
           },
+          { opacity: editable ? 1 : 0.7 },
         ]}
       >
         <Icon

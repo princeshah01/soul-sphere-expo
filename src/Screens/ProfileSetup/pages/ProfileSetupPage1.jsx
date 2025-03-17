@@ -91,16 +91,17 @@ const ProfileSetupPage1 = ({ userInfo, setUserInfo, currentIndex }) => {
             onChangeText={(value) =>
               setUserInfo((prev) => ({ ...prev, bio: value }))
             }
-            placeholder="Bio"
+            placeholder="Enter about yourself..."
             maxLength={50}
             placeholderTextColor={
-              isDark ? Theme.dark.text + "bf" : Theme.light.text + "bf"
+              isDark ? Theme.dark.text + "66" : Theme.light.text + "66"
             }
             multiline={true}
             numberOfLines={4}
             style={{
               fontSize: responsiveFontSize(2),
-              fontWeight: 500,
+              opacity: 0.9,
+              fontWeight: 600,
               color: isDark ? Theme.dark.text : Theme.light.text,
             }}
           />

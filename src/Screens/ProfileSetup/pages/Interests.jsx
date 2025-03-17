@@ -1,5 +1,5 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { TouchableOpacity, StyleSheet, Text } from "react-native";
+import { View, StyleSheet, Text, TouchableWithoutFeedback } from "react-native";
 import { useDarkMode } from "../../../provider/DarkModeProvider";
 import { Theme } from "../../../Constant/Theme";
 
@@ -7,33 +7,34 @@ const RenderInterestItem = ({ item, toggleInterest }) => {
   const { isDark } = useDarkMode();
 
   return (
-    <TouchableOpacity
-      style={[
-        styles.interestItem,
-        {
-          backgroundColor: item.selected
-            ? Theme.primary
-            : isDark
-            ? Theme.dark.text
-            : Theme.light.secondary,
-        },
-      ]}
-      onPress={() => toggleInterest(item.id)}
-    >
-      <MaterialCommunityIcons
-        name={item.icon}
-        size={24}
-        color={item.selected ? "#fff" : "#000"}
-      />
-      <Text
+    <TouchableWithoutFeedback onPress={() => toggleInterest(item.id)}>
+      <View
         style={[
-          styles.interestText,
-          { color: item.selected ? "#fff" : "#000" },
+          styles.interestItem,
+          {
+            backgroundColor: item.selected
+              ? Theme.primary
+              : isDark
+              ? Theme.dark.text
+              : Theme.light.secondary,
+          },
         ]}
       >
-        {item.name}
-      </Text>
-    </TouchableOpacity>
+        <MaterialCommunityIcons
+          name={item.icon}
+          size={24}
+          color={item.selected ? "#fff" : "#000"}
+        />
+        <Text
+          style={[
+            styles.interestText,
+            { color: item.selected ? "#fff" : "#000" },
+          ]}
+        >
+          {item.name}
+        </Text>
+      </View>
+    </TouchableWithoutFeedback>
   );
 };
 

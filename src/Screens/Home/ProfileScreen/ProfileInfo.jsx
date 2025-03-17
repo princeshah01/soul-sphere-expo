@@ -4,7 +4,8 @@ import {
   View,
   TouchableOpacity,
   Dimensions,
-  Alert,
+  TextInput,
+  ScrollView,
 } from "react-native";
 import React, { useState } from "react";
 import CustomInput from "../../../Components/ProfileSetup/CustomInput";
@@ -18,18 +19,23 @@ import BackButton from "../../../Components/BackButton";
 import { useSelector } from "react-redux";
 import { updateUser } from "../../../Store/Slice/Auth";
 import Icon from "@expo/vector-icons/Ionicons";
-import env from "../../../Constant/env";
 import { useDispatch } from "react-redux";
-const { width } = Dimensions.get("window");
 import { showToast } from "../../../Components/showToast";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import {
+  responsiveFontSize,
+  responsiveWidth,
+  responsiveHeight,
+} from "react-native-responsive-dimensions";
+import axios from "axios";
+import env from "../../../Constant/env";
 
+const { width } = Dimensions.get("window");
 const ProfileInfo = ({ navigation }) => {
-  const user = useSelector((store) => store.Auth.user);
+  const { user, token } = useSelector((store) => store.Auth);
   const dispatch = useDispatch();
   const { bio, fullName, email, locationName, dob, gender, profilePicture } =
     user;
-  // console.log(bio, fullName, email, locationName, dob, gender, profilePicture);
   const [isEditing, setIsEditing] = useState(false);
   const [name, setName] = useState(fullName);
   const [Email, setEmail] = useState(email);
@@ -39,28 +45,127 @@ const ProfileInfo = ({ navigation }) => {
   const [Bio, setBio] = useState(bio);
   const [Dob, setDob] = useState(new Date(dob));
   const { isDark } = useDarkMode();
-  const HandleUpdate = async () => {
-    setIsEditing(false);
-    showToast("success", "your profile been updated successfully ");
-    const newUser = {
-      ...user,
-      fullName: name,
-      email: Email,
-      gender: Gender,
-      profilePicture: propic,
-      locationName: Location,
-      bio: Bio,
-      dob: Dob.toDateString(),
-    };
-    dispatch(
-      updateUser(newUser)
-      // hit api to save db in back end
-    );
-    await AsyncStorage.setItem("user", JSON.stringify(newUser));
+  const [isLocationChanged, setIsLocationChanged] = useState(false);
+  const [isLoading, setIsloading] = useState(false);
+
+  const updateLocation = async (location) => {
+    try {
+      const res = await axios.get(
+        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
+          location
+        )}`,
+        {
+          headers: {
+            "User-Agent": "ProjectDemo/1.0 ",
+            "Accept-Language": "en",
+          },
+        }
+      );
+      if (res.data && res.data.length > 0) {
+        const newCoordinates = {
+          type: "Point",
+          coordinates: [
+            parseFloat(res.data[0].lat),
+            parseFloat(res.data[0].lon),
+          ],
+        };
+        const newLocationName = res.data[0].display_name;
+        return { newCoordinates, newLocationName };
+      }
+    } catch (err) {
+      showToast(
+        "error",
+        err.response?.data?.message || "Failed to fetch location"
+      );
+    }
+    return null;
+  };
+
+  const handleUpdate = async () => {
+    setIsloading(true);
+    try {
+      let newCoordinates = null;
+      let newLocationName = Location;
+
+      if (isLocationChanged) {
+        const locationData = await updateLocation(Location);
+        if (locationData) {
+          newCoordinates = locationData.newCoordinates;
+          newLocationName = locationData.newLocationName;
+        } else {
+          showToast("error", "No such location found.");
+          return;
+        }
+      }
+
+      const updateData = {
+        fullName: name,
+        gender: Gender,
+        profilePicture: propic,
+        locationName: newLocationName,
+        bio: Bio,
+        dob: Dob.toString(),
+        locationcoordinates: newCoordinates,
+      };
+
+      let formData = new FormData();
+      Object.keys(updateData).forEach((key) => {
+        if (key !== "profilePicture" && key !== "locationcoordinates") {
+          formData.append(key, updateData[key]);
+        }
+      });
+
+      if (
+        propic &&
+        typeof propic === "string" &&
+        propic.startsWith("file://")
+      ) {
+        formData.append("profilePicture", {
+          uri: propic,
+          name: "profilePicture.jpg",
+          type: "image/jpeg",
+        });
+      }
+
+      if (newCoordinates) {
+        formData.append("locationcoordinates", JSON.stringify(newCoordinates));
+      }
+
+      const response = await axios.patch(
+        `${env.API_BASE_URL}/profile/edit`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response?.data && response.status === 200) {
+        const newUser = { ...user, ...updateData };
+        dispatch(updateUser(newUser));
+        await AsyncStorage.setItem("user", JSON.stringify(newUser));
+        showToast("success", "Your profile has been updated successfully.");
+        setIsEditing(false);
+        setIsLocationChanged(false);
+      } else {
+        showToast("error", "failed to update your profile.");
+      }
+    } catch (err) {
+      showToast(
+        "error",
+        err.response?.data?.message || "failed to update profile - server error"
+      );
+    } finally {
+      setIsloading(false);
+    }
   };
 
   return (
-    <View
+    <ScrollView
+      showsVerticalScrollIndicator={false}
+      keyboardShouldPersistTaps="handled"
       style={[
         styles.mainContainer,
         {
@@ -107,7 +212,7 @@ const ProfileInfo = ({ navigation }) => {
 
       <View style={styles.main}>
         <ProfileImage
-          profilePicture={env.API_BASE_URL + profilePicture}
+          profilePicture={propic}
           disabled={!isEditing}
           setProfilePicture={setProPic}
         />
@@ -130,18 +235,51 @@ const ProfileInfo = ({ navigation }) => {
           iconName="location"
           isEditable={isEditing}
           value={Location}
-          setValue={setLocation}
+          setValue={(value) => {
+            setLocation(value);
+            setIsLocationChanged(true);
+          }}
         />
-        <CustomInput
-          name="Bio"
-          iconName="newspaper-outline"
-          isEditable={isEditing}
-          value={Bio}
-          multiline={true}
-          setValue={setBio}
-        />
+        <View
+          style={[
+            styles.inputContainer,
+            {
+              backgroundColor: isDark
+                ? Theme.dark.background
+                : Theme.light.background,
+              borderColor: isDark ? Theme.dark.border : Theme.light.border,
+            },
+            { opacity: isEditing ? 1 : 0.6 },
+          ]}
+        >
+          <Icon
+            name="newspaper-outline"
+            size={20}
+            color={Theme.primary}
+            style={{ alignSelf: "center", marginHorizontal: 8 }}
+          />
+          <TextInput
+            editable={isEditing}
+            value={Bio}
+            onChangeText={setBio}
+            placeholder="Enter about yourself..."
+            maxLength={50}
+            placeholderTextColor={
+              isDark ? Theme.dark.text + "66" : Theme.light.text + "66"
+            }
+            multiline={true}
+            numberOfLines={4}
+            style={[
+              styles.inputText,
+              {
+                color: isDark ? Theme.dark.text : Theme.light.text,
+              },
+              { opacity: isEditing ? 0.9 : 0.7 },
+            ]}
+          />
+        </View>
+
         <CustomDatePicker value={Dob} setValue={setDob} editable={isEditing} />
-        {/* <InterestRender interests={Interest} disabled={isEditing} /> */}
         <CustomGenderDrop
           Gender={Gender}
           setGender={setGender}
@@ -150,11 +288,11 @@ const ProfileInfo = ({ navigation }) => {
         <GradientButton
           name="save"
           styleByProp={{ width: width * 0.75 }}
-          disabled={!isEditing}
-          onPress={HandleUpdate}
+          disabled={isLoading || !isEditing}
+          onPress={handleUpdate}
         />
       </View>
-    </View>
+    </ScrollView>
   );
 };
 
@@ -167,7 +305,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 15,
     justifyContent: "space-between",
-    paddingRight: "20",
+    paddingRight: 20,
   },
   backButton: { backgroundColor: "#F5F7F8", padding: 5, borderRadius: 12 },
   title: { fontSize: 22, fontWeight: "600", marginLeft: 15 },
@@ -180,5 +318,22 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 5,
     borderRadius: 10,
+  },
+  inputContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    borderWidth: 1,
+    borderRadius: 10,
+    width: responsiveWidth(75),
+    height: responsiveHeight(10),
+    paddingHorizontal: 10,
+    elevation: 2,
+  },
+  inputText: {
+    flex: 1,
+    alignSelf: "flex-start",
+    maxHeight: responsiveHeight(),
+    fontSize: responsiveFontSize(1.8),
+    fontWeight: "600",
   },
 });

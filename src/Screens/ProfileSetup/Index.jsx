@@ -4,7 +4,6 @@ import Header from "./Header";
 import { useDarkMode } from "../../provider/DarkModeProvider";
 import { Theme } from "../../Constant/Theme";
 import pageData from "./pages/ProfileSetupPageData";
-import { responsiveWidth } from "react-native-responsive-dimensions";
 import FooterProfileSetup from "./FooterProfileSetup";
 
 const ProfileSetup = () => {
@@ -39,12 +38,16 @@ const ProfileSetup = () => {
       }}
     >
       <Header currentIndex={currentIndex} name="Profile Setup" />
+
       <FlatList
         ref={flatListRef}
+        data={pageData}
         horizontal
         pagingEnabled
         showsHorizontalScrollIndicator={false}
-        data={pageData}
+        keyboardShouldPersistTaps="handled"
+        keyExtractor={(item, index) => `${item.id}_${index}`}
+        scrollEnabled={false}
         renderItem={({ item }) => {
           const Component = item;
           return (
@@ -55,19 +58,14 @@ const ProfileSetup = () => {
             />
           );
         }}
-        keyExtractor={(item, index) => `${item.id}_${index}`}
-        onScroll={(event) => {
-          const offsetX = event.nativeEvent.contentOffset.x;
-          const newIndex = Math.round(offsetX / responsiveWidth(100));
-          setCurrentIndex(newIndex);
-        }}
-        scrollEventThrottle={32}
       />
+
       <FooterProfileSetup
         currentIndex={currentIndex}
         data={pageData}
         flatListRef={flatListRef}
         userInfo={userInfo}
+        setCurrentIndex={setCurrentIndex}
       />
     </View>
   );
