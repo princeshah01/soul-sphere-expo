@@ -25,30 +25,70 @@ const Contact = ({ navigation }) => {
   const [modalView, setModalView] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [IssueTypes, setIssueTypes] = useState(null);
+  const [issueText, setIssueText] = useState("");
   const [SelectedIssue, setSelectedIssue] = useState("");
-  console.log(SelectedIssue);
+  // console.log(SelectedIssue + " : issue type form contact.jsx");
+  // console.log(issueText + " : issue text from contact.jsx");
   const token = useSelector((store) => store.Auth.token);
   async function getIssueType() {
     try {
-      let res = await axios.get(env.API_BASE_URL + "/issueType", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      let res = await axios.get(env.API_BASE_URL + "/issueType");
       if (res.status === 200 && res.data) {
         setIssueTypes(res?.data?.data);
         setIsLoading(false);
       }
     } catch (err) {
       showToast("error", "Fetching data error " + err.message);
-    } finally {
     }
   }
   useEffect(() => {
     getIssueType();
   }, []);
   const { isDark } = useDarkMode();
-  const handle
+  const handleSubmit = () => {
+    if (!issueText || !SelectedIssue) {
+      showToast(
+        "error",
+        "Must Select IssueType and must Write Issue in TextBox"
+      );
+    } else {
+      setModalView(true);
+    }
+  };
+  const SubmitIssue = async () => {
+    if (!issueText || !SelectedIssue) {
+      showToast(
+        "error",
+        "Must Select IssueType and must Write Issue in TextBox"
+      );
+    } else {
+      try {
+        let response = await axios.post(
+          env.API_BASE_URL + "/support",
+          {
+            message: issueText,
+            issueType: SelectedIssue,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        if (response?.status == 200 && response?.data) {
+          showToast("success", response?.data?.message);
+        } else {
+          showToast("error", "someThing went wrong");
+        }
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setModalView(false);
+        setSelectedIssue("");
+        setIssueText("");
+      }
+    }
+  };
   return isLoading ? (
     <View
       style={{
@@ -74,6 +114,8 @@ const Contact = ({ navigation }) => {
     >
       <CustomModal
         visible={modalView}
+        onPressBtn1={setModalView}
+        onPressBtn2={SubmitIssue}
         text1="Confirm Your Issue Submission"
         text2={`Are you sure you want to submit this issue? Our support team will review your request and respond as soon as possible.`}
       />
@@ -90,11 +132,9 @@ const Contact = ({ navigation }) => {
           </Text>
         </View>
         <TouchableOpacity
-          style={{
-            borderWidth: 1,
-            borderColor: Theme.primary,
-            padding: 5,
-            borderRadius: 20,
+          style={{ padding: 5 }}
+          onPress={() => {
+            navigation.navigate("HelpHistory");
           }}
         >
           <Text style={{ color: Theme.primary }}>Help History</Text>
@@ -132,7 +172,7 @@ const Contact = ({ navigation }) => {
               return item === SelectedIssue ? (
                 <TouchableOpacity
                   onPress={() => {
-                    setSelectedIssue(item);
+                    setSelectedIssue(null);
                   }}
                   style={{
                     borderWidth: 1,
@@ -203,9 +243,11 @@ const Contact = ({ navigation }) => {
               placeholderTextColor={
                 isDark ? Theme.dark.text + "99" : Theme.light.text + "99"
               }
+              value={issueText}
+              onChangeText={setIssueText}
             />
           </View>
-          <GradientButton name="Submit" />
+          <GradientButton name="Submit" onPress={handleSubmit} />
         </View>
       </View>
     </ScrollView>

@@ -15,56 +15,87 @@ import Toast from "react-native-toast-message";
 import axios from "axios";
 import { View } from "react-native";
 import { ActivityIndicator } from "react-native-paper";
+import env from "./src/Constant/env";
+import { showToast } from "./src/Components/showToast";
+
 function MainApp() {
   const Auth = useSelector((store) => store.Auth.isAuthenticated);
   const dispatch = useDispatch();
-  const [isLoading, setIsloading] = useState(true)
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const getDataFromLocal = async () => {
       try {
         const token = await AsyncStorage.getItem("token");
-        let user = null;
-        const res = await axios.get(env.API_BASE_URL + "/profile/info", {
+        if (!token) {
+          console.log("No token found.");
+          setIsLoading(false);
+          return;
+        }
+
+        const res = await axios.get(`${env.API_BASE_URL}/profile/view`, {
           headers: {
             Authorization: `Bearer ${token}`,
-          }
-        })
+          },
+        });
 
         if (res.status === 200 && res.data) {
-          user = res.data.userInfo;
-        }
-        if (token && user) {
-          // const parsedUser = JSON.parse(user);
           dispatch(
             login({
               token: token,
-              user: user,
+              user: res.data,
               isAuthenticated: true,
             })
           );
-          setIsloading(false)
-          console.log("User data restored: ", user);
+          // console.log("User data restored: ", res.data);
         } else {
+          // console.log("No user data found.");
 
-          console.log("No user");
+          // this will work when token will get expired
+          showToast("error", "no data found");
+          AsyncStorage.removeItem("token");
+          AsyncStorage.removeItem("user");
         }
       } catch (err) {
-        console.error("retrieving error", err);
+        console.error("Retrieving error:", err);
+
+        const storedUser = await AsyncStorage.getItem("user");
+        if (storedUser) {
+          const parsedUser = JSON.parse(storedUser);
+          dispatch(
+            login({
+              token: token,
+              user: parsedUser,
+              isAuthenticated: true,
+            })
+          );
+        } else {
+          dispatch(
+            login({
+              token: null,
+              user: null,
+              isAuthenticated: false,
+            })
+          );
+        }
+      } finally {
+        setIsLoading(false);
       }
     };
 
     getDataFromLocal();
+  }, []);
 
-  }, [dispatch]);
-  //  dispatch in dependsncy array will make sure that this will only called when this component rerenders
-  // Subscribing to Auth slice of store
   const { isDark } = useDarkMode();
+
   if (isLoading) {
-    return (<View style={{ flex: 1, justifyContent: 'center', alignContent: 'center' }}>
-      <ActivityIndicator size={30} />
-    </View>)
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ActivityIndicator size={30} />
+      </View>
+    );
   }
+
   return (
     <>
       <NavigationContainer>
@@ -81,7 +112,7 @@ function MainApp() {
   );
 }
 
-export default App = () => {
+export default function App() {
   return (
     <Provider store={AppStore}>
       <DarkModeProvider>
@@ -89,4 +120,4 @@ export default App = () => {
       </DarkModeProvider>
     </Provider>
   );
-};
+}

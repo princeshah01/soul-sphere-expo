@@ -10,9 +10,12 @@ import CustomButton from "./CustomBotton";
 const CustomModal = ({
   visible = false,
   buttonName,
-  onPress,
+  onPressBtn1,
+  onPressBtn2,
   text1,
   text2,
+  btn1,
+  btn2,
 }) => {
   return (
     <Modal
@@ -37,8 +40,14 @@ const CustomModal = ({
               justifyContent: "space-between",
             }}
           >
-            <CustomButton name="cancel" outline={true} />
-            <CustomButton name="Submit" />
+            <CustomButton
+              name={btn1 ? btn1 : "cancel"}
+              outline={true}
+              onPress={() => {
+                onPressBtn1(false);
+              }}
+            />
+            <CustomButton name={btn2 ? btn2 : "Submit"} onPress={onPressBtn2} />
           </View>
         </View>
       </View>
@@ -78,7 +87,7 @@ const styles = StyleSheet.create({
     letterSpacing: 1.2,
   },
   para: {
-    fontSize: responsiveFontSize(2),
+    fontSize: responsiveFontSize(1.8),
     fontWeight: 400,
     letterSpacing: 1.2,
   },

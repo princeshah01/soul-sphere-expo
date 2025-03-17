@@ -14,4 +14,12 @@ const interestData = [
   { id: 13, name: "Technology", selected: false, icon: "laptop" },
   { id: 14, name: "Photography", selected: false, icon: "camera" },
 ];
+
+export function getIcon(name) {
+  const toReturn = interestData.find(
+    (item) => item.name.toLowerCase() === name.toLowerCase()
+  );
+  return toReturn ? toReturn.icon : "alien";
+}
+
 export default interestData;

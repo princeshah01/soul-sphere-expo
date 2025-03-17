@@ -1,4 +1,6 @@
 export const Theme = {
+  warning: "#e86056",
+  success: "#56e889",
   primary: "#a83ef5",
   light: {
     border: "#efefef",

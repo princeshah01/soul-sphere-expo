@@ -101,7 +101,6 @@ const ProfileSetupPage3 = ({ setUserInfo }) => {
           Who are you interested in?
         </Text>
         <CustomGenderDrop
-          style={{ width: responsiveWidth(90) }}
           Gender={InterestIn}
           setGender={setInterestIn}
           placeholder="Select your preference"

@@ -4,6 +4,7 @@ import { Theme } from "../Constant/Theme";
 import { useDarkMode } from "../provider/DarkModeProvider";
 import { View, Text } from "react-native";
 import ProfileNavigation from "./ProfileNavigation";
+import Feed from "../Screens/Home/Feed/Index";
 const Tab = createBottomTabNavigator();
 
 const getTabBarIcon = (routeName, focused, size) => {
@@ -20,20 +21,6 @@ const getTabBarIcon = (routeName, focused, size) => {
   return <Icon name={iconName} size={size} color={Theme.dark.primary} />;
 };
 
-const Feed = () => {
-  return (
-    <View
-      style={{
-        flex: 1,
-        backgroundColor: Theme.light.background,
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      <Text>Feed</Text>
-    </View>
-  );
-};
 const UserConnections = () => {
   return (
     <View
@@ -67,7 +54,7 @@ const HomeNavigation = () => {
   const { isDark } = useDarkMode();
   return (
     <Tab.Navigator
-      initialRouteName="Profile"
+      initialRouteName="Feed"
       screenOptions={({ route }) => ({
         tabBarShowLabel: false,
         tabBarActiveTintColor: Theme.primary,
