@@ -8,7 +8,7 @@ import { useDarkMode } from "../provider/DarkModeProvider";
 import { Theme } from "../Constant/Theme";
 
 const IssueData = ({ data }) => {
-  const { message, issueType, status, createdAt } = data;
+  const { message, issueType, status, createdAt, updatedAt } = data;
   const { isDark } = useDarkMode();
   const date = new Date(createdAt).toDateString();
 
@@ -57,15 +57,28 @@ const IssueData = ({ data }) => {
       >
         {message}
       </Text>
-      <Text
-        style={[
-          styles.textLight,
-          isDark && styles.textDark,
-          { opacity: 0.7, fontSize: responsiveFontSize(1.3) },
-        ]}
-      >
-        IssueRaised on : {date}
-      </Text>
+      <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+        <Text
+          style={[
+            styles.textLight,
+            isDark && styles.textDark,
+            { opacity: 0.7, fontSize: responsiveFontSize(1.3) },
+          ]}
+        >
+          IssueRaised on : {date}
+        </Text>
+        {status == "Resolved" && (
+          <Text
+            style={[
+              styles.textLight,
+              isDark && styles.textDark,
+              { opacity: 0.7, fontSize: responsiveFontSize(1.3) },
+            ]}
+          >
+            Resolved on : {new Date(createdAt).toDateString()}
+          </Text>
+        )}
+      </View>
     </View>
   );
 };

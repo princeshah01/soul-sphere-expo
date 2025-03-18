@@ -5,6 +5,7 @@ import { useDarkMode } from "../provider/DarkModeProvider";
 import { View, Text } from "react-native";
 import ProfileNavigation from "./ProfileNavigation";
 import Feed from "../Screens/Home/Feed/Index";
+import UserConnection from "../Screens/Home/MatchScreen/Index";
 const Tab = createBottomTabNavigator();
 
 const getTabBarIcon = (routeName, focused, size) => {
@@ -21,20 +22,6 @@ const getTabBarIcon = (routeName, focused, size) => {
   return <Icon name={iconName} size={size} color={Theme.dark.primary} />;
 };
 
-const UserConnections = () => {
-  return (
-    <View
-      style={{
-        flex: 1,
-        backgroundColor: Theme.light.background,
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      <Text>UserConnection</Text>
-    </View>
-  );
-};
 const ChitChat = () => {
   return (
     <View
@@ -70,7 +57,7 @@ const HomeNavigation = () => {
       })}
     >
       <Tab.Screen name="Feed" component={Feed} />
-      <Tab.Screen name="Match" component={UserConnections} />
+      <Tab.Screen name="Match" component={UserConnection} />
       <Tab.Screen name="Chat" component={ChitChat} />
       <Tab.Screen name="Profile" component={ProfileNavigation} />
     </Tab.Navigator>

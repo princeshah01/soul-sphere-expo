@@ -1,5 +1,5 @@
-import { View, Text, Dimensions, StyleSheet, Modal } from "react-native";
-import React, { useState } from "react";
+import { View, Text, Dimensions, StyleSheet } from "react-native";
+import React, { useCallback } from "react";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import ProfileImage from "../../../Components/ProfileSetup/ProfileImage";
 import CustomButton from "../../../Components/CustomBotton";
@@ -9,12 +9,45 @@ import { Theme } from "../../../Constant/Theme";
 import Header from "../../ProfileSetup/Header";
 const { width, height } = Dimensions.get("window");
 import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import axios from "axios";
+import env from "../../../Constant/env";
+import { addRequests } from "../../../Store/Slice/requests";
+import { useFocusEffect } from "@react-navigation/native";
 
 const ProfileScreen = ({ navigation }) => {
-  const { fullName, profilePicture } = useSelector((store) => store.Auth.user);
+  const dispatch = useDispatch();
+  const { user, token } = useSelector((store) => store.Auth);
+  const { data } = useSelector((store) => store.Requests);
+  const { fullName, profilePicture } = user;
   const { isDark } = useDarkMode();
-  // console.log(fullName);
+  console.log(">>>>", data);
 
+  const fetchRequestData = useCallback(async () => {
+    try {
+      let response = await axios.get(
+        env.API_BASE_URL + "/user/requests/received",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (response?.status === 200) {
+        if (response?.data?.data?.length > 0) {
+          dispatch(addRequests(response?.data?.data));
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }, [token]);
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchRequestData();
+    }, [fetchRequestData])
+  );
   return (
     <View
       style={[
@@ -86,13 +119,13 @@ const ProfileScreen = ({ navigation }) => {
         />
         <CustomProfileBtn
           onPress={() => {
-            navigation.navigate("Invitations", { setReqCount });
+            navigation.navigate("Requests");
           }}
           iconName="adduser"
           name="Requests"
           isDark={isDark}
-          notify={true}
-          // notifycount={reqCount}
+          notify={data.length > 0 ? true : false}
+          notifycount={data.length}
         />
         <CustomProfileBtn
           onPress={() => {
@@ -194,3 +227,28 @@ const styles = StyleSheet.create({
 });
 
 export default ProfileScreen;
+
+// {
+//   "email":"prince@ids.com" ,
+//    "password":"123456789@Pr"
+// }
+// {
+//    "email":"marilou.martin@example.com" ,
+//     "password":"123456789@Pr"
+// }
+// {
+//    "email":"rose.roger@example.com" ,
+//     "password":"123456789@Pr"
+// }
+// {
+//    "email":"sefanja.pors@example.com" ,
+//     "password":"123456789@Pr"
+// }
+// {
+//    "email":"consuelo.ruiz@example.com" ,
+//     "password":"123456789@Pr"
+// }
+// {
+//    "email":"caleb.vargas@example.com" ,
+//     "password":"123456789@Pr"
+// }

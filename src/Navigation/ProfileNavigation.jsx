@@ -10,6 +10,7 @@ import Contact from "../Screens/Home/ProfileScreen/Contact.jsx";
 import About from "../Screens/Home/ProfileScreen/About.jsx";
 import Setting from "../Screens/Home/ProfileScreen/Setting.jsx";
 import HelpHistory from "../Screens/Home/ProfileScreen/HelpHistory.jsx";
+import Requests from "../Screens/Home/ProfileScreen/Requests.jsx";
 const SettingStack = createStackNavigator();
 
 const SettingNavigation = () => {
@@ -31,7 +32,7 @@ const SettingNavigation = () => {
         <SettingStack.Screen name="Contact" component={Contact} />
         <SettingStack.Screen name="ProfileInfo" component={ProfileInfo} />
         <SettingStack.Screen name="HelpHistory" component={HelpHistory} />
-        {/* <SettingStack.Screen name="Favorite" component={Favorite} /> */}
+        <SettingStack.Screen name="Requests" component={Requests} />
       </SettingStack.Navigator>
     </View>
   );

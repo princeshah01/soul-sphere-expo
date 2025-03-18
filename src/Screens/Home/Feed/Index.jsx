@@ -18,6 +18,7 @@ import axios from "axios";
 import env from "../../../Constant/env";
 import { ActivityIndicator } from "react-native-paper";
 import { showToast } from "../../../Components/showToast";
+import CustomButton from "../../../Components/CustomBotton";
 
 const Feed = ({ navigation }) => {
   const { user, token } = useSelector((store) => store.Auth);
@@ -58,17 +59,17 @@ const Feed = ({ navigation }) => {
     const getFeedData = async () => {
       setIsLoading(true);
       try {
-        console.log(page + "page ");
-        let uri = `${env.API_BASE_URL}/feed`;
-        console.log(uri);
+        // console.log(page + "page ");
+        let uri = `${env.API_BASE_URL}/feed/${page}`;
+        // console.log(uri);
         let response = await axios.get(uri, {
           headers: {
-            Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2N2Q3Zjk2NTBiM2M5OWJhMzc5ZjZjZjgiLCJpYXQiOjE3NDIyMTgyNDcsImV4cCI6MTc0MjgyMzA0N30.fVCrqajh_F5c_Wc3WIHmkZ-GWdsx2QJN-HsBm4NrNec`,
+            Authorization: `Bearer ${token}`,
           },
         });
-        if (response.status == 200) {
+        if (response.status == 200 && response.data) {
           // console.log("data recived " + JSON.stringify(response.data.data));
-          console.log(response.data.data.length + "data got");
+          // console.log(response.data.data.length + "data got");
           setData(response.data.data);
         }
       } catch (error) {
@@ -194,7 +195,7 @@ const Feed = ({ navigation }) => {
               backgroundColor="transparent"
               cardStyle={{
                 width: width * 0.9,
-                height: height * 0.8,
+                height: height * 0.78,
                 justifyContent: "center",
                 alignItems: "center",
               }}
@@ -262,6 +263,13 @@ const Feed = ({ navigation }) => {
           ) : (
             <View style={styles.noData}>
               <Text>No Data Left to Show Try Again later!!</Text>
+              <CustomButton
+                name="Reload"
+                outline={true}
+                onPress={() => {
+                  setPage((prev) => prev + 1);
+                }}
+              />
             </View>
           )}
         </View>
@@ -278,5 +286,6 @@ const styles = StyleSheet.create({
     height: height * 0.9,
     justifyContent: "center",
     alignItems: "center",
+    gap: 20,
   },
 });

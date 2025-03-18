@@ -43,7 +43,7 @@ const ProfileImage = ({
       >
         {profilePicture ? (
           <Image
-            source={{ uri: `${profilePicture}` }}
+            source={{ uri: profilePicture }}
             style={{
               width: size * 0.95,
               height: size * 0.95,

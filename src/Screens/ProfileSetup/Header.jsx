@@ -10,7 +10,12 @@ import { useDarkMode } from "../../provider/DarkModeProvider";
 import { Theme } from "../../Constant/Theme";
 import Logout from "../../Components/LogoutButton";
 
-const ProfileSetupHeader = ({ currentIndex, name }) => {
+const ProfileSetupHeader = ({
+  currentIndex,
+  name,
+  isLogout = true,
+  height = 10,
+}) => {
   const { isDark } = useDarkMode();
   return (
     <View
@@ -19,7 +24,7 @@ const ProfileSetupHeader = ({ currentIndex, name }) => {
         backgroundColor: isDark
           ? Theme.dark.background
           : Theme.light.background,
-        height: responsiveHeight(10),
+        height: responsiveHeight(height),
       }}
     >
       <View
@@ -28,7 +33,7 @@ const ProfileSetupHeader = ({ currentIndex, name }) => {
           alignItems: "center",
           justifyContent: "space-between",
           gap: 10,
-          marginTop: 10,
+          // marginTop: 10,
           marginHorizontal: 20,
         }}
       >
@@ -44,7 +49,7 @@ const ProfileSetupHeader = ({ currentIndex, name }) => {
             {name}
           </Text>
         </View>
-        <Logout />
+        {isLogout && <Logout />}
       </View>
       {name === "Profile Setup" && (
         <View
