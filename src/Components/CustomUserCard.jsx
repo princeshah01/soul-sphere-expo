@@ -18,9 +18,14 @@ import { useSelector } from "react-redux";
 import { showToast } from "./showToast";
 import { useDispatch } from "react-redux";
 import { removeRequest } from "../Store/Slice/requests";
-import { addConnection } from "../Store/Slice/ConnectionSlice";
 
-const CustomUserCard = ({ data, isRequest = false, disable = false }) => {
+const CustomUserCard = ({
+  data,
+  isRequest = false,
+  disable = false,
+  toggleIsFav,
+  isToggle,
+}) => {
   const dispatch = useDispatch();
   const { token } = useSelector((store) => store.Auth);
   const handleReqReview = async (status, id) => {
@@ -34,15 +39,12 @@ const CustomUserCard = ({ data, isRequest = false, disable = false }) => {
           },
         }
       );
-      if (response.data) {
-        console.log(response?.data);
-      }
       if (response.status == 200) {
         showToast("success", response.data.message);
         dispatch(removeRequest(data._id));
       }
     } catch (error) {
-      console.log(error?.response?.data);
+      // console.log(error?.response?.data);
       showToast("error", error?.response?.data?.message);
     }
   };
@@ -50,11 +52,12 @@ const CustomUserCard = ({ data, isRequest = false, disable = false }) => {
     try {
       let response = await axios.post(
         `${env.API_BASE_URL}/user/${data._id}/${f}`,
-        {},
+        { fullName },
         { headers: { Authorization: `Bearer ${token}` } }
       );
       if (response.status === 200) {
-        console.log(response.data);
+        // console.log(response?.data.message);
+        showToast("success", response?.data?.message);
         // dispatch();
       }
     } catch (error) {
@@ -63,10 +66,9 @@ const CustomUserCard = ({ data, isRequest = false, disable = false }) => {
   };
   const { isDark } = useDarkMode();
   // console.log(data, "userCard");
-  const { isfav } = data;
-  const { profilePicture, fullName, age, gender } = isRequest
+  const { profilePicture, fullName, age, gender, isfav } = isRequest
     ? data.fromUserId
-    : data?.data;
+    : data?.userInfo;
   return (
     <TouchableOpacity
       disabled={disable}
@@ -160,7 +162,6 @@ const CustomUserCard = ({ data, isRequest = false, disable = false }) => {
             <TouchableOpacity
               onPress={() => {
                 handleReqReview("accepted", data._id);
-                //api calll to accept
               }}
               style={{
                 backgroundColor: Theme.primary,
@@ -190,10 +191,8 @@ const CustomUserCard = ({ data, isRequest = false, disable = false }) => {
         ) : (
           <TouchableOpacity
             onPress={() => {
-              console.log("api call here");
-              console.log(isfav + " data from user info");
-              console.log(data.isfav);
               handleIsFav(!isfav);
+              toggleIsFav(!isToggle);
             }}
           >
             <Icon

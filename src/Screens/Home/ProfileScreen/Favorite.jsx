@@ -1,12 +1,22 @@
 import { StyleSheet, Text, View, FlatList } from "react-native";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import BackButton from "../../../Components/BackButton";
 import { useDarkMode } from "../../../provider/DarkModeProvider";
 import { Theme } from "../../../Constant/Theme";
-import UserCard from "../Userconnections/UserCard";
+import CustomUserCard from "../../../Components/CustomUserCard";
+
+import useConnections from "../../../hooks/useConnection";
+
 const Favorite = ({ navigation }) => {
-  const data = [];
+  const [IsFavToggle, setIsFavToggle] = useState(false);
+  const { data } = useConnections(IsFavToggle);
   const { isDark } = useDarkMode();
+
+  const [isFavData, setIsFavData] = useState([]);
+  useEffect(() => {
+    const favData = data.filter((item) => item.userInfo.isfav);
+    setIsFavData(favData);
+  }, [data]);
   return (
     <View
       style={{
@@ -29,14 +39,18 @@ const Favorite = ({ navigation }) => {
         </Text>
       </View>
       <FlatList
-        data={data}
+        data={isFavData}
         contentContainerStyle={{ gap: 10, marginTop: 20 }}
         keyExtractor={(item) => item._id}
-        renderItem={({ item }) =>
-          item.isfav && (
-            <UserCard user={item} navigation={navigation} isDark={isDark} />
-          )
-        }
+        renderItem={({ item }) => (
+          <CustomUserCard
+            data={item}
+            navigation={navigation}
+            isDark={isDark}
+            toggleIsFav={setIsFavToggle}
+            isToggle={IsFavToggle}
+          />
+        )}
       />
     </View>
   );

@@ -29,7 +29,7 @@ const CustomModal = ({
     >
       <View style={styles.centeredView}>
         <View style={styles.modalView}>
-          <View style={{ flex: 1, width: "100%" }}>
+          <View style={{ flex: 1, width: "100%", gap: 10 }}>
             <Text style={styles.header}>{text1}</Text>
             <Text style={styles.para}>{text2}</Text>
           </View>
@@ -71,6 +71,7 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     borderRadius: 20,
     padding: 29,
+    paddingHorizontal: 20,
     alignItems: "center",
     shadowColor: "#000",
     shadowOffset: {

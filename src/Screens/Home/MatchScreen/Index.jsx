@@ -1,38 +1,19 @@
 import { ScrollView, View, StyleSheet, Dimensions } from "react-native";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useState } from "react";
 import CustomUserCard from "../../../Components/CustomUserCard.jsx";
 import SearchBar from "../../../Components/SearchBar.jsx";
 import Header from "../../ProfileSetup/Header";
 import { Theme } from "../../../Constant/Theme.js";
 import { useDarkMode } from "../../../provider/DarkModeProvider.jsx";
-import axios from "axios";
+import useConnections from "../../../hooks/useConnection.js";
+import { useSelector } from "react-redux";
+
 const { width, height } = Dimensions.get("screen");
-import env from "../../../Constant/env.js";
-import { useSelector, useDispatch } from "react-redux";
-import { addConnection } from "../../../Store/Slice/ConnectionSlice.jsx";
+
 const UserConnection = ({ navigation }) => {
-  const dispatch = useDispatch();
-  const { data } = useSelector((store) => store.Connection);
-  const { token } = useSelector((store) => store.Auth);
-  const getConnections = async () => {
-    try {
-      let response = await axios.get(`${env.API_BASE_URL}/user/connections`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      if (response.status === 200) {
-        dispatch(addConnection(response?.data?.data));
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  useEffect(() => {
-    getConnections();
-  }, []);
-
+  const [IsFavToggle, setIsFavToggle] = useState(false);
+  const request = useSelector((store) => store?.Requests?.data);
+  const { data } = useConnections(IsFavToggle, request);
   const { isDark } = useDarkMode();
   const [search, setSearch] = useState("");
   const [filteredData, setFilteredData] = useState(null);
@@ -40,11 +21,10 @@ const UserConnection = ({ navigation }) => {
   const handleSearch = (q) => {
     setSearch(q);
     const filterd = data.filter((item) => {
-      return item?.data?.fullName.toLowerCase().includes(q.toLowerCase());
+      return item?.userInfo?.fullName.toLowerCase().includes(q.toLowerCase());
     });
     setFilteredData(filterd);
   };
-  //   console.log("main Data >>>>>>>>>>>>>>>>>", mainData);
   return (
     <View
       style={[
@@ -81,6 +61,8 @@ const UserConnection = ({ navigation }) => {
                       navigation={navigation}
                       key={idx}
                       data={item}
+                      isToggle={IsFavToggle}
+                      toggleIsFav={setIsFavToggle}
                     />
                   ))
                 : data.map((item, idx) => (
@@ -89,6 +71,8 @@ const UserConnection = ({ navigation }) => {
                       navigation={navigation}
                       key={idx}
                       data={item}
+                      isToggle={IsFavToggle}
+                      toggleIsFav={setIsFavToggle}
                     />
                   ))}
             </View>

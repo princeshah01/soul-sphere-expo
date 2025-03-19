@@ -28,7 +28,7 @@ function MainApp() {
       try {
         const token = await AsyncStorage.getItem("token");
         if (!token) {
-          console.log("No token found.");
+          // console.log("No token found.");
           setIsLoading(false);
           return;
         }

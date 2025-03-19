@@ -9,9 +9,11 @@ const CustomProfileBtn = ({
   isDark,
   notify = false,
   notifycount,
+  isVerified,
 }) => {
   return (
     <TouchableOpacity
+      disabled={isVerified}
       onPress={onPress}
       style={{
         flexDirection: "row",
@@ -45,7 +47,12 @@ const CustomProfileBtn = ({
           <Icons
             name={iconName}
             size={20}
-            style={{ margin: "auto" }}
+            style={[
+              { margin: "auto" },
+              isVerified && {
+                opacity: 0.6,
+              },
+            ]}
             color={
               name.toLowerCase() === "logout"
                 ? "red"
@@ -78,16 +85,31 @@ const CustomProfileBtn = ({
             </View>
           )}
         </View>
-        <Text
-          style={[
-            styles.btnText,
-            {
-              color: isDark ? Theme.dark.text : Theme.light.text,
-            },
-          ]}
-        >
-          {name}
-        </Text>
+        <View>
+          <Text
+            style={[
+              styles.btnText,
+              {
+                color: isDark ? Theme.dark.text : Theme.light.text,
+              },
+              isVerified && {
+                opacity: 0.6,
+              },
+            ]}
+          >
+            {name}
+          </Text>
+          {isVerified && (
+            <Text
+              style={{
+                color: isDark ? Theme.dark.text : Theme.light.text,
+                opacity: 0.6,
+              }}
+            >
+              Your Account is already Verified
+            </Text>
+          )}
+        </View>
       </View>
 
       <View style={{ marginRight: 8 }}>
@@ -95,6 +117,11 @@ const CustomProfileBtn = ({
           name="right"
           color={isDark ? Theme.dark.text : Theme.light.text}
           size={24}
+          style={
+            isVerified && {
+              opacity: 0.6,
+            }
+          }
         />
       </View>
     </TouchableOpacity>

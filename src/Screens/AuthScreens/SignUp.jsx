@@ -13,8 +13,8 @@ import {
   responsiveFontSize,
 } from "react-native-responsive-dimensions";
 import axios from "axios";
-import Toast from "react-native-toast-message";
 import { showToast } from "../../Components/showToast.jsx";
+import CustomModal from "../../Components/CustomModal.jsx";
 
 const Signup = ({ navigation }) => {
   const { isDark } = useDarkMode();
@@ -29,12 +29,31 @@ const Signup = ({ navigation }) => {
   const [fullName, setFullName] = useState("");
   const [nameVerify, setNameVerify] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
 
   function handleName(e) {
     setFullName(e);
     setNameVerify(e.length >= 4 ? true : e.length === 0 ? null : false);
   }
+  function HandleModal() {
+    if (
+      !userNameVerify ||
+      !emailVerify ||
+      !passwordVerify ||
+      !confirmPasswordVerify ||
+      !nameVerify
+    ) {
+      showToast("error", "Please enter valid details!");
+      return;
+    }
 
+    if (password !== confirmPassword) {
+      showToast("error", "Passwords do not match!");
+      return;
+    }
+
+    setModalVisible(!modalVisible);
+  }
   function handlePassword(e) {
     setPassword(e);
     setPasswordVerify(e.length >= 8 ? true : e.length === 0 ? null : false);
@@ -64,22 +83,6 @@ const Signup = ({ navigation }) => {
   }
 
   const handleSignup = async () => {
-    if (
-      !userNameVerify ||
-      !emailVerify ||
-      !passwordVerify ||
-      !confirmPasswordVerify ||
-      !nameVerify
-    ) {
-      showToast("error", "Please enter valid details!");
-      return;
-    }
-
-    if (password !== confirmPassword) {
-      showToast("error", "Passwords do not match!");
-      return;
-    }
-
     setLoading(true);
 
     try {
@@ -91,19 +94,15 @@ const Signup = ({ navigation }) => {
       });
 
       if (response.status === 200) {
-        console.log("Signup successful", response.data);
+        // console.log("Signup successful", response.data);
         showToast(
           "success",
           response.data.message2 || "Account created successfully!"
         );
-
-        const alert = setTimeout(() => {
-          navigation.navigate("Login");
-          Alert.alert("Read It Carefully", response.data.message);
-        }, 1800);
+        navigation.replace("OTPVerification", { email });
       }
     } catch (error) {
-      console.error("Signup Error:", error.response?.data || error.message);
+      // console.error("Signup Error:", error.response?.data || error.message);
 
       if (error.response) {
         showToast("error", error.response?.data?.error || "Signup failed!");
@@ -111,6 +110,7 @@ const Signup = ({ navigation }) => {
         showToast("error", "Network error! Check your internet connection.");
       }
     } finally {
+      setModalVisible(false);
       setLoading(false);
     }
   };
@@ -132,7 +132,16 @@ const Signup = ({ navigation }) => {
       <View style={styles.logo}>
         <Logo size="80" />
       </View>
-
+      <CustomModal
+        visible={modalVisible}
+        btn2="continue"
+        onPressBtn1={() => {
+          setModalVisible(false);
+        }}
+        onPressBtn2={handleSignup}
+        text1="Are you Sure?"
+        text2={`you want to sign up with ${email} ? we will be sending verification code to your email to verify !!`}
+      />
       <BackButton
         isDark={isDark}
         navigation={navigation}
@@ -196,7 +205,7 @@ const Signup = ({ navigation }) => {
       </View>
 
       <GradientButton
-        onPress={handleSignup}
+        onPress={HandleModal}
         name="Register"
         disabled={loading}
         styleByProp={{

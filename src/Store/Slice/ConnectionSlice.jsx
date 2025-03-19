@@ -9,9 +9,6 @@ const ConnectionSlice = createSlice({
     addConnection: (state, action) => {
       state.data = action.payload;
     },
-    // updateIsFav:(state , action)=>{
-    //     state.data.map()
-    // }
   },
 });
 

@@ -1,4 +1,4 @@
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, Text } from "react-native";
 import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 import ProfileScreen from "../Screens/Home/ProfileScreen/ProfileScreen.jsx";
@@ -11,6 +11,8 @@ import About from "../Screens/Home/ProfileScreen/About.jsx";
 import Setting from "../Screens/Home/ProfileScreen/Setting.jsx";
 import HelpHistory from "../Screens/Home/ProfileScreen/HelpHistory.jsx";
 import Requests from "../Screens/Home/ProfileScreen/Requests.jsx";
+import Favorite from "../Screens/Home/ProfileScreen/Favorite.jsx";
+import VerifyAccount from "../Screens/Home/ProfileScreen/VerifyAccount.jsx";
 const SettingStack = createStackNavigator();
 
 const SettingNavigation = () => {
@@ -33,6 +35,8 @@ const SettingNavigation = () => {
         <SettingStack.Screen name="ProfileInfo" component={ProfileInfo} />
         <SettingStack.Screen name="HelpHistory" component={HelpHistory} />
         <SettingStack.Screen name="Requests" component={Requests} />
+        <SettingStack.Screen name="Favorite" component={Favorite} />
+        <SettingStack.Screen name="VerifyAccount" component={VerifyAccount} />
       </SettingStack.Navigator>
     </View>
   );

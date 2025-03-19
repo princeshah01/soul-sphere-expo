@@ -5,8 +5,10 @@ import { useDarkMode } from "../../../provider/DarkModeProvider";
 import { Theme } from "../../../Constant/Theme";
 import CustomProfileBtn from "../../../Components/ProfileSetting/CustomProfileBtn";
 import DarkModeToggleButton from "../../../Components/DarkModeToogleButton";
+import { useSelector } from "react-redux";
 const Setting = ({ navigation }) => {
   const { isDark, setIsDark } = useDarkMode();
+  const { isVerified } = useSelector((store) => store.Auth.user);
   return (
     <View
       style={{
@@ -32,6 +34,15 @@ const Setting = ({ navigation }) => {
       <View style={{ gap: 20, marginTop: 20 }}>
         <DarkModeToggleButton isDark={isDark} setIsDark={setIsDark} />
 
+        <CustomProfileBtn
+          iconName="check"
+          name="Verify Account"
+          onPress={() => {
+            navigation.navigate("VerifyAccount");
+          }}
+          isDark={isDark}
+          isVerified={isVerified}
+        />
         <CustomProfileBtn
           iconName="info"
           name="About"

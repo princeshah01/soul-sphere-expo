@@ -15,7 +15,7 @@ const Logout = () => {
       await AsyncStorage.removeItem("user");
       dispatch(logout());
 
-      console.log("App data cleared");
+      // console.log("App data cleared");
     } catch (e) {
       console.error("Failed to clear app data", e);
     }

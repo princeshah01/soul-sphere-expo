@@ -21,7 +21,6 @@ const ProfileScreen = ({ navigation }) => {
   const { data } = useSelector((store) => store.Requests);
   const { fullName, profilePicture } = user;
   const { isDark } = useDarkMode();
-  console.log(">>>>", data);
 
   const fetchRequestData = useCallback(async () => {
     try {

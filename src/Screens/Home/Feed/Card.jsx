@@ -36,6 +36,22 @@ const Card = ({ user }) => {
         <View style={styles.imageContainer}>
           <Image source={{ uri: user.profilePicture }} style={styles.image} />
           <View style={styles.infoContainer}>
+            {user.isVerified && (
+              <Text
+                style={{
+                  backgroundColor: Theme.primary,
+                  color: Theme.light.background,
+                  alignSelf: "flex-start",
+                  padding: 5,
+                  paddingHorizontal: 10,
+                  borderRadius: 15,
+                  fontSize: 16,
+                  fontWeight: 700,
+                }}
+              >
+                Verified
+              </Text>
+            )}
             <Text
               style={[
                 styles.textname,
