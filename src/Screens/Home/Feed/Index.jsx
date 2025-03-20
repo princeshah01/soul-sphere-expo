@@ -18,68 +18,46 @@ import axios from "axios";
 import env from "../../../Constant/env";
 import { ActivityIndicator } from "react-native-paper";
 import { showToast } from "../../../Components/showToast";
-import CustomButton from "../../../Components/CustomBotton";
 
 const Feed = ({ navigation }) => {
   const { user, token } = useSelector((store) => store.Auth);
   const [isLoading, setIsLoading] = useState(true);
-  //   const data = [
-  //     {
-  //       interestIn: "Female",
-  //       fullName: "john doe",
-  //       userName: "johndoe123",
-  //       email: "johndoe@example.com",
-  //       password: "hashedpassword123", // This should be hashed before saving
-  //       gender: "Male",
-  //       dob: "1995-06-15",
-  //       isVerified: true,
-  //       age: 20,
-  //       isProfileSetup: true,
-  //       bio: "Love to explore new places.",
-  //       profilePicture: "http://192.168.137.111:3000/uploads/bestpic2.jpg",
-  //       twoBestPics: [
-  //         "http://192.168.137.111:3000/uploads/bestpic1.jpg",
-  //         "http://192.168.137.111:3000/uploads/1742186152333profilePicture.jpg",
-  //       ],
-  //       locationName: "New York",
-  //       locationcoordiantes: {
-  //         type: "Point",
-  //         coordinates: [-74.006, 40.7128],
-  //       },
-  //       interest: ["travel", "music", "fitness"],
-  //       matches: [],
-  //       isPremiumUser: false,
-  //       lastActive: new Date("2024-03-16T12:30:00.000Z"),
-  //     },
-  //   ];
   const [data, setData] = useState([]);
   const [page, setPage] = useState(1);
 
-  useEffect(() => {
-    const getFeedData = async () => {
-      setIsLoading(true);
-      try {
-        // console.log(page + "page ");
-        let uri = `${env.API_BASE_URL}/feed/${page}`;
-        // console.log(uri);
-        let response = await axios.get(uri, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        if (response.status == 200 && response.data) {
-          // console.log("data recived " + JSON.stringify(response.data.data));
-          // console.log(response.data.data.length + "data got");
-          setData(response.data.data);
+  const getFeedData = async () => {
+    setIsLoading(true);
+    try {
+      console.log(page + "page ");
+      let uri = `${env.API_BASE_URL}/feed/${page}`;
+      console.log(uri);
+      let response = await axios.get(uri, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (response.status == 200) {
+        console.log(response.data.data.length + "data from api");
+        if (response.data.data.length > 0) {
+          setData((prev) => [...prev, ...response.data.data]);
+          setPage((prev) => prev + 1);
         }
-      } catch (error) {
-        console.log(error.message);
-      } finally {
-        setIsLoading(false);
       }
-    };
+    } catch (error) {
+      console.log(error.message + "feed");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
     getFeedData();
-  }, [page]);
+  }, []);
+  const handleS = (index) => {
+    if (index >= data.length - 2) {
+      getFeedData();
+    }
+  };
 
   const [greetMsg, setGreetMsg] = useState("");
 
@@ -187,7 +165,7 @@ const Feed = ({ navigation }) => {
             </View>
           ) : data.length > 0 ? (
             <Swiper
-              key={data.length}
+              key={page}
               cards={data}
               verticalSwipe={false}
               renderCard={(item) => <Card user={item} />}
@@ -195,7 +173,7 @@ const Feed = ({ navigation }) => {
               backgroundColor="transparent"
               cardStyle={{
                 width: width * 0.9,
-                height: height * 0.78,
+                height: height * 0.8,
                 justifyContent: "center",
                 alignItems: "center",
               }}
@@ -204,9 +182,12 @@ const Feed = ({ navigation }) => {
                 justifyContent: "center",
                 alignItems: "center",
               }}
-              onSwipedAll={() => {
-                console.log("getting new data");
-                setPage((prev) => prev + 1);
+              // onSwipedAll={() => {
+              //   console.log("getting new data");
+              //   setPage((prev) => prev + 1);
+              // }}
+              onSwiped={(index) => {
+                handleS(index);
               }}
               onSwipedLeft={(idx) => {
                 handleSwipe("ignored", data[idx]._id);
@@ -263,13 +244,6 @@ const Feed = ({ navigation }) => {
           ) : (
             <View style={styles.noData}>
               <Text>No Data Left to Show Try Again later!!</Text>
-              <CustomButton
-                name="Reload"
-                outline={true}
-                onPress={() => {
-                  setPage((prev) => prev + 1);
-                }}
-              />
             </View>
           )}
         </View>
@@ -286,6 +260,5 @@ const styles = StyleSheet.create({
     height: height * 0.9,
     justifyContent: "center",
     alignItems: "center",
-    gap: 20,
   },
 });
