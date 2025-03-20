@@ -4,7 +4,8 @@ import { createStackNavigator } from "@react-navigation/stack";
 import Chat from "../Screens/Home/ChatScreen/Chat";
 import ChatRoom from "../Screens/Home/ChatScreen/ChatRoom";
 import ProfileView from "../Screens/Home/ChatScreen/ProfileView";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
+// import { GestureHandlerRootView } from "react-native-gesture-handler";
+import ChatProvider from "../provider/ChatProvider";
 const ChatStack = createStackNavigator();
 
 const CallRoom = () => {
@@ -17,7 +18,7 @@ const CallRoom = () => {
 
 const ChatNavigation = ({ navigation }) => {
   return (
-    <GestureHandlerRootView>
+    <ChatProvider>
       <ChatStack.Navigator
         initialRouteName="ChitChat"
         screenOptions={{ headerShown: false }}
@@ -27,7 +28,7 @@ const ChatNavigation = ({ navigation }) => {
         <ChatStack.Screen name="ProfileView" component={ProfileView} />
         <ChatStack.Screen name="call" component={CallRoom} />
       </ChatStack.Navigator>
-    </GestureHandlerRootView>
+    </ChatProvider>
   );
 };
 
