@@ -18,6 +18,7 @@ import { useSelector } from "react-redux";
 import { showToast } from "./showToast";
 import { useDispatch } from "react-redux";
 import { removeRequest } from "../Store/Slice/requests";
+import { useNavigation } from "@react-navigation/native";
 
 const CustomUserCard = ({
   data,
@@ -25,7 +26,9 @@ const CustomUserCard = ({
   disable = false,
   toggleIsFav,
   isToggle,
+  handleNavigation,
 }) => {
+  const navigation = useNavigation();
   const dispatch = useDispatch();
   const { token } = useSelector((store) => store.Auth);
   const handleReqReview = async (status, id) => {
@@ -66,16 +69,12 @@ const CustomUserCard = ({
   };
   const { isDark } = useDarkMode();
   // console.log(data, "userCard");
-  const { profilePicture, fullName, age, gender, isfav } = isRequest
-    ? data.fromUserId
-    : data?.userInfo;
+  const userInfo = isRequest ? data.fromUserId : data?.userInfo;
+  const { profilePicture, fullName, age, gender, isfav } = userInfo;
   return (
     <TouchableOpacity
       disabled={disable}
-      onPress={() => {
-        // navigation.navigate("ChatInbox", { ...user });
-        // navigation.navigate("Details", { ...user });
-      }}
+      onPress={handleNavigation}
       style={{
         width: width * 0.9,
         height: height * 0.09,

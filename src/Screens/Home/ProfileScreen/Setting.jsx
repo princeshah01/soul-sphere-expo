@@ -5,10 +5,16 @@ import { useDarkMode } from "../../../provider/DarkModeProvider";
 import { Theme } from "../../../Constant/Theme";
 import CustomProfileBtn from "../../../Components/ProfileSetting/CustomProfileBtn";
 import DarkModeToggleButton from "../../../Components/DarkModeToogleButton";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+// import CustomButton from "../../../Components/CustomBotton";
+// import {
+//   updateIsVerified,
+//   updateNotIsVerified,
+// } from "../../../Store/Slice/Auth";
 const Setting = ({ navigation }) => {
   const { isDark, setIsDark } = useDarkMode();
   const { isVerified } = useSelector((store) => store.Auth.user);
+  const dispatch = useDispatch();
   return (
     <View
       style={{
@@ -67,6 +73,12 @@ const Setting = ({ navigation }) => {
           name="Help"
           isDark={isDark}
         />
+        {/* <CustomButton
+          name="reset verify"
+          onPress={() => {
+            dispatch(updateNotIsVerified());
+          }}
+        /> */}
       </View>
     </View>
   );

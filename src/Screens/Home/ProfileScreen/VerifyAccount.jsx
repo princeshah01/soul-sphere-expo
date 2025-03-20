@@ -20,13 +20,15 @@ import CustomButton from "../../../Components/CustomBotton";
 import { showToast } from "../../../Components/showToast";
 import axios from "axios";
 import env from "../../../Constant/env";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { updateIsVerified } from "../../../Store/Slice/Auth";
 
 const VerifyAccount = ({ navigation }) => {
   const { email } = useSelector((store) => store.Auth.user);
+  const dispatch = useDispatch();
   console.log("🚀 ~ OTPVerification ~ email:", email);
   const otpRef = useRef("");
-  const [isLoading, setIsloading] = useState(false);
+  // const [isLoading, setIsloading] = useState(false);
   const { isDark } = useDarkMode();
   const verifyOTP = async () => {
     if (!email) {
@@ -47,6 +49,7 @@ const VerifyAccount = ({ navigation }) => {
       console.log(response.data);
       if (response.status === 200) {
         showToast("success", response?.data?.message);
+        dispatch(updateIsVerified());
         navigation.goBack();
       }
     } catch (err) {

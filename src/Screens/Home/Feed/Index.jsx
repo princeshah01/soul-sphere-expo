@@ -18,6 +18,7 @@ import axios from "axios";
 import env from "../../../Constant/env";
 import { ActivityIndicator } from "react-native-paper";
 import { showToast } from "../../../Components/showToast";
+import CustomButton from "../../../Components/CustomBotton";
 
 const Feed = ({ navigation }) => {
   const { user, token } = useSelector((store) => store.Auth);
@@ -37,10 +38,11 @@ const Feed = ({ navigation }) => {
         },
       });
       if (response.status == 200) {
-        console.log(response.data.data.length + "data from api");
-        if (response.data.data.length > 0) {
-          setData((prev) => [...prev, ...response.data.data]);
-          setPage((prev) => prev + 1);
+        console.log(response.data?.data?.length + "data from api");
+        if (response.data?.data?.length > 0) {
+          setData(response?.data?.data);
+        } else {
+          setData([]);
         }
       }
     } catch (error) {
@@ -52,12 +54,7 @@ const Feed = ({ navigation }) => {
 
   useEffect(() => {
     getFeedData();
-  }, []);
-  const handleS = (index) => {
-    if (index >= data.length - 2) {
-      getFeedData();
-    }
-  };
+  }, [page]);
 
   const [greetMsg, setGreetMsg] = useState("");
 
@@ -165,7 +162,7 @@ const Feed = ({ navigation }) => {
             </View>
           ) : data.length > 0 ? (
             <Swiper
-              key={page}
+              key={data.length}
               cards={data}
               verticalSwipe={false}
               renderCard={(item) => <Card user={item} />}
@@ -182,12 +179,9 @@ const Feed = ({ navigation }) => {
                 justifyContent: "center",
                 alignItems: "center",
               }}
-              // onSwipedAll={() => {
-              //   console.log("getting new data");
-              //   setPage((prev) => prev + 1);
-              // }}
-              onSwiped={(index) => {
-                handleS(index);
+              onSwipedAll={() => {
+                console.log("getting new data");
+                setPage((prev) => prev + 1);
               }}
               onSwipedLeft={(idx) => {
                 handleSwipe("ignored", data[idx]._id);
@@ -244,6 +238,13 @@ const Feed = ({ navigation }) => {
           ) : (
             <View style={styles.noData}>
               <Text>No Data Left to Show Try Again later!!</Text>
+              <CustomButton
+                name="Reload"
+                outline={true}
+                onPress={() => {
+                  setPage((prev) => prev + 1);
+                }}
+              />
             </View>
           )}
         </View>

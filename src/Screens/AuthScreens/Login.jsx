@@ -74,8 +74,12 @@ const Login = ({ navigation }) => {
       if (response.status === 200) {
         const data = response.data;
         await AsyncStorage.setItem("token", data.token);
-        await AsyncStorage.setItem("user", JSON.stringify(data.user));
-        dispatch(login({ user: data.user, token: data.token }));
+        dispatch(
+          login({
+            user: data.user,
+            token: data.token,
+          })
+        );
 
         showToast("success", "Login successful!");
       } else {
@@ -84,9 +88,7 @@ const Login = ({ navigation }) => {
     } catch (error) {
       console.error("Login Error:", error.response?.data || error.message);
       if (error.response) {
-        if (error.response.status === 401) {
-          showToast("error", "Incorrect email or password!");
-        } else if (error.response.status === 500) {
+        if (error.response.status === 500) {
           showToast("error", "Server error! Please try again later.");
         } else {
           showToast(

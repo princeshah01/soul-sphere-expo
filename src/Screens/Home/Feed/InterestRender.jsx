@@ -46,7 +46,7 @@ const InterestRender = ({ data }) => {
         justifyContent: "center",
       }}
     >
-      {data.map((item, idx) => {
+      {data?.map((item, idx) => {
         return <InterestCard data={item} key={idx} isDark={isDark} />;
       })}
     </View>

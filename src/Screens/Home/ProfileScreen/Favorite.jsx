@@ -4,8 +4,10 @@ import BackButton from "../../../Components/BackButton";
 import { useDarkMode } from "../../../provider/DarkModeProvider";
 import { Theme } from "../../../Constant/Theme";
 import CustomUserCard from "../../../Components/CustomUserCard";
-
+import CustomButton from "../../../Components/CustomBotton";
 import useConnections from "../../../hooks/useConnection";
+import NoData from "../../../Components/NoData";
+import Icon from "@expo/vector-icons/Ionicons";
 
 const Favorite = ({ navigation }) => {
   const [IsFavToggle, setIsFavToggle] = useState(false);
@@ -38,20 +40,41 @@ const Favorite = ({ navigation }) => {
           Favorite matches
         </Text>
       </View>
-      <FlatList
-        data={isFavData}
-        contentContainerStyle={{ gap: 10, marginTop: 20 }}
-        keyExtractor={(item) => item._id}
-        renderItem={({ item }) => (
-          <CustomUserCard
-            data={item}
-            navigation={navigation}
-            isDark={isDark}
-            toggleIsFav={setIsFavToggle}
-            isToggle={IsFavToggle}
-          />
-        )}
-      />
+      {isFavData.length > 0 ? (
+        <FlatList
+          data={isFavData}
+          contentContainerStyle={{ gap: 10, marginTop: 20 }}
+          keyExtractor={(item) => item._id}
+          renderItem={({ item }) => (
+            <CustomUserCard
+              data={item}
+              navigation={navigation}
+              handleNavigation={() => {
+                navigation.navigate("ProfileViewFav", {
+                  userInfo: item.userInfo,
+                });
+              }}
+              isDark={isDark}
+              toggleIsFav={setIsFavToggle}
+              isToggle={IsFavToggle}
+            />
+          )}
+        />
+      ) : (
+        <NoData
+          msg="No favorites yet?"
+          msg2="your heart’s waiting for a connection! Add some favorites and make it beat faster"
+        >
+          <CustomButton
+            outline={true}
+            onPress={() => {
+              navigation.jumpTo("Match");
+            }}
+          >
+            <Icon name="person-add-outline" color={Theme.primary} size={20} />
+          </CustomButton>
+        </NoData>
+      )}
     </View>
   );
 };

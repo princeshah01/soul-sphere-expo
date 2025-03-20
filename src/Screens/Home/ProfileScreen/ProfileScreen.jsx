@@ -79,8 +79,9 @@ const ProfileScreen = ({ navigation }) => {
             </Text>
             <CustomButton
               outline={true}
+              styleContainer={{ backgroundColor: Theme.light.background }}
               onPress={() => {
-                navigation.navigate("SubscriptionScreen");
+                navigation.navigate("Pay");
               }}
               name="Get Vip"
               style={{

@@ -21,9 +21,21 @@ const AuthSlice = createSlice({
     updateUser: (state, action) => {
       state.user = action.payload;
     },
+    updateIsVerified: (state) => {
+      state.user.isVerified = true;
+    },
+    // updateNotIsVerified: (state) => {
+    //   state.user.isVerified = false;
+    // },
   },
 });
 
-export const { login, logout, updateUser } = AuthSlice.actions;
+export const {
+  login,
+  logout,
+  updateUser,
+  updateIsVerified,
+  // updateNotIsVerified,
+} = AuthSlice.actions;
 
 export default AuthSlice.reducer;

@@ -39,7 +39,7 @@ const Card = ({ user }) => {
             {user.isVerified && (
               <Text
                 style={{
-                  backgroundColor: Theme.primary,
+                  backgroundColor: Theme.primary + "B3",
                   color: Theme.light.background,
                   alignSelf: "flex-start",
                   padding: 5,

@@ -3,10 +3,10 @@ import Icon from "@expo/vector-icons/AntDesign";
 import React from "react";
 import { Theme } from "../Constant/Theme";
 
-const BackButton = ({ isDark, navigation, style }) => {
+const BackButton = ({ isDark, navigation, style, onPress }) => {
   return (
     <TouchableOpacity
-      onPress={() => navigation.goBack()}
+      onPress={onPress ? onPress : () => navigation.goBack()}
       style={[
         {
           backgroundColor: isDark

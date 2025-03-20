@@ -6,6 +6,8 @@ import { View, Text } from "react-native";
 import ProfileNavigation from "./ProfileNavigation";
 import Feed from "../Screens/Home/Feed/Index";
 import UserConnection from "../Screens/Home/MatchScreen/Index";
+import ChatNavigation from "./ChatNavigation";
+import MatchStack from "../Screens/Home/MatchScreen/MatchStack";
 const Tab = createBottomTabNavigator();
 
 const getTabBarIcon = (routeName, focused, size) => {
@@ -57,8 +59,8 @@ const HomeNavigation = () => {
       })}
     >
       <Tab.Screen name="Feed" component={Feed} />
-      <Tab.Screen name="Match" component={UserConnection} />
-      <Tab.Screen name="Chat" component={ChitChat} />
+      <Tab.Screen name="Match" component={MatchStack} />
+      <Tab.Screen name="Chat" component={ChatNavigation} />
       <Tab.Screen name="Profile" component={ProfileNavigation} />
     </Tab.Navigator>
   );

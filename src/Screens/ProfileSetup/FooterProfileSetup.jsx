@@ -105,7 +105,7 @@ const FooterProfileSetup = ({
           showToast("success", response?.data?.message);
           const data = response?.data?.UserProfileSetup;
           dispatch(login({ user: data, token }));
-          await AsyncStorage.setItem("user", JSON.stringify(data));
+          // await AsyncStorage.setItem("user", JSON.stringify(data));
         }
       } catch (err) {
         console.log(err);

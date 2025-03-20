@@ -145,7 +145,7 @@ const ProfileInfo = ({ navigation }) => {
       if (response?.data && response.status === 200) {
         const newUser = { ...user, ...updateData };
         dispatch(updateUser(newUser));
-        await AsyncStorage.setItem("user", JSON.stringify(newUser));
+        // await AsyncStorage.setItem("user", JSON.stringify(newUser));
         showToast("success", "Your profile has been updated successfully.");
         setIsEditing(false);
         setIsLocationChanged(false);

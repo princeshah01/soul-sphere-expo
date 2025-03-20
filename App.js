@@ -24,11 +24,12 @@ function MainApp() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const getDataFromLocal = async () => {
+    const getUserData = async () => {
       try {
         const token = await AsyncStorage.getItem("token");
+        console.log("🚀 ~ getUserData ~ token:", token);
+
         if (!token) {
-          // console.log("No token found.");
           setIsLoading(false);
           return;
         }
@@ -44,47 +45,24 @@ function MainApp() {
             login({
               token: token,
               user: res.data,
-              isAuthenticated: true,
             })
           );
-          // console.log("User data restored: ", res.data);
         } else {
-          // console.log("No user data found.");
-
-          // this will work when token will get expired
-          showToast("error", "no data found");
-          AsyncStorage.removeItem("token");
-          AsyncStorage.removeItem("user");
+          showToast("error", "No data found");
         }
       } catch (err) {
         console.error("Retrieving error:", err);
-
-        const storedUser = await AsyncStorage.getItem("user");
-        if (storedUser) {
-          const parsedUser = JSON.parse(storedUser);
-          dispatch(
-            login({
-              token: token,
-              user: parsedUser,
-              isAuthenticated: true,
-            })
-          );
-        } else {
-          dispatch(
-            login({
-              token: null,
-              user: null,
-              isAuthenticated: false,
-            })
-          );
-        }
+        showToast(
+          "error",
+          err.response?.data?.message || "Something went wrong"
+        );
       } finally {
         setIsLoading(false);
       }
     };
 
-    getDataFromLocal();
-  }, []);
+    getUserData();
+  }, [dispatch]);
 
   const { isDark } = useDarkMode();
 

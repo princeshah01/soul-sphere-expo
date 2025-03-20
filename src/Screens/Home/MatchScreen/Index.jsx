@@ -7,6 +7,8 @@ import { Theme } from "../../../Constant/Theme.js";
 import { useDarkMode } from "../../../provider/DarkModeProvider.jsx";
 import useConnections from "../../../hooks/useConnection.js";
 import { useSelector } from "react-redux";
+import NoData from "../../../Components/NoData.jsx";
+import CustomButton from "../../../Components/CustomBotton.jsx";
 
 const { width, height } = Dimensions.get("screen");
 
@@ -54,8 +56,9 @@ const UserConnection = ({ navigation }) => {
         <ScrollView showsVerticalScrollIndicator={false}>
           <View style={styles.innerView}>
             <View style={{ gap: 10, marginTop: 10 }}>
-              {filteredData
-                ? filteredData.map((item, idx) => (
+              {data.length > 0 ? (
+                filteredData ? (
+                  filteredData.map((item, idx) => (
                     <CustomUserCard
                       isDark={isDark}
                       navigation={navigation}
@@ -63,9 +66,15 @@ const UserConnection = ({ navigation }) => {
                       data={item}
                       isToggle={IsFavToggle}
                       toggleIsFav={setIsFavToggle}
+                      handleNavigation={() => {
+                        navigation.navigate("profileView", {
+                          userInfo: item.userInfo,
+                        });
+                      }}
                     />
                   ))
-                : data.map((item, idx) => (
+                ) : (
+                  data.map((item, idx) => (
                     <CustomUserCard
                       isDark={isDark}
                       navigation={navigation}
@@ -73,8 +82,28 @@ const UserConnection = ({ navigation }) => {
                       data={item}
                       isToggle={IsFavToggle}
                       toggleIsFav={setIsFavToggle}
+                      handleNavigation={() => {
+                        navigation.navigate("profileView", {
+                          userInfo: item.userInfo,
+                        });
+                      }}
                     />
-                  ))}
+                  ))
+                )
+              ) : (
+                <NoData
+                  msg="No matches yet?"
+                  msg2="Don’t rush! great things take time. Your person is coming! ❤"
+                >
+                  <CustomButton
+                    name="Explore Now"
+                    outline={true}
+                    onPress={() => {
+                      navigation.jumpTo("Feed");
+                    }}
+                  />
+                </NoData>
+              )}
             </View>
           </View>
         </ScrollView>

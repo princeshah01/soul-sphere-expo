@@ -7,6 +7,7 @@ const CustomButton = ({
   outline = false,
   style,
   isDisabled = false,
+  styleContainer,
 }) => {
   return (
     <TouchableOpacity
@@ -14,7 +15,9 @@ const CustomButton = ({
       onPress={onPress}
       style={[
         styles.button,
-        outline ? styles.outlineButton : styles.filledButton,
+        outline
+          ? [{ ...styleContainer }, styles.outlineButton]
+          : styles.filledButton,
         { opacity: isDisabled && 0.5 },
         { ...style },
       ]}
@@ -43,7 +46,6 @@ const styles = StyleSheet.create({
     borderColor: "#a83ef5",
   },
   outlineButton: {
-    backgroundColor: "white",
     borderColor: "#a83ef5",
   },
   text: {

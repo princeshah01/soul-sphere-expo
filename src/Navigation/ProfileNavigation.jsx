@@ -5,14 +5,14 @@ import ProfileScreen from "../Screens/Home/ProfileScreen/ProfileScreen.jsx";
 import ProfileInfo from "../Screens/Home/ProfileScreen/ProfileInfo.jsx";
 import Help from "../Screens/Home/ProfileScreen/Help.jsx";
 import Contact from "../Screens/Home/ProfileScreen/Contact.jsx";
-// import SubscriptionScreen from "../Screens/Home/ProfileScreen/Subscription.jsx";
-// import Favorite from "../Screens/Home/ProfileScreen/Favorite.jsx";
+import SubscriptionScreen from "../Screens/Home/ProfileScreen/Pay/Subscription.jsx";
 import About from "../Screens/Home/ProfileScreen/About.jsx";
 import Setting from "../Screens/Home/ProfileScreen/Setting.jsx";
 import HelpHistory from "../Screens/Home/ProfileScreen/HelpHistory.jsx";
 import Requests from "../Screens/Home/ProfileScreen/Requests.jsx";
 import Favorite from "../Screens/Home/ProfileScreen/Favorite.jsx";
 import VerifyAccount from "../Screens/Home/ProfileScreen/VerifyAccount.jsx";
+import ProfileView from "../Screens/Home/ChatScreen/ProfileView.jsx";
 const SettingStack = createStackNavigator();
 
 const SettingNavigation = () => {
@@ -37,6 +37,8 @@ const SettingNavigation = () => {
         <SettingStack.Screen name="Requests" component={Requests} />
         <SettingStack.Screen name="Favorite" component={Favorite} />
         <SettingStack.Screen name="VerifyAccount" component={VerifyAccount} />
+        <SettingStack.Screen name="Pay" component={SubscriptionScreen} />
+        <SettingStack.Screen name="ProfileViewFav" component={ProfileView} />
       </SettingStack.Navigator>
     </View>
   );

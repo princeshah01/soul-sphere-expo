@@ -12,7 +12,6 @@ const Logout = () => {
   const HandleLogout = async () => {
     try {
       await AsyncStorage.removeItem("token");
-      await AsyncStorage.removeItem("user");
       dispatch(logout());
 
       // console.log("App data cleared");
