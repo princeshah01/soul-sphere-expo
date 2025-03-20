@@ -17,6 +17,8 @@ import { View } from "react-native";
 import { ActivityIndicator } from "react-native-paper";
 import env from "./src/Constant/env";
 import { showToast } from "./src/Components/showToast";
+import "react-native-gesture-handler";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 function MainApp() {
   const Auth = useSelector((store) => store.Auth.isAuthenticated);
@@ -92,10 +94,12 @@ function MainApp() {
 
 export default function App() {
   return (
-    <Provider store={AppStore}>
-      <DarkModeProvider>
-        <MainApp />
-      </DarkModeProvider>
-    </Provider>
+    <GestureHandlerRootView>
+      <Provider store={AppStore}>
+        <DarkModeProvider>
+          <MainApp />
+        </DarkModeProvider>
+      </Provider>
+    </GestureHandlerRootView>
   );
 }
