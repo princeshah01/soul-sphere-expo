@@ -25,7 +25,8 @@ const ProfileView = () => {
   const bottomSheetRef = useRef(null);
   const snapPoints = useMemo(() => ["30%", "90%"], []);
   const userInfo = route?.params?.userInfo;
-  console.log("🚀 ~ ProfileView ~ userInfo:", userInfo);
+  const twoPics = userInfo?.twoBestPics;
+  console.log("🚀 ~ ProfileView ~ userInfo:", twoPics);
 
   const { isPremiumUser } = useSelector((store) => store.Auth.user);
 
@@ -213,20 +214,21 @@ const ProfileView = () => {
               >
                 Best Images
               </Text>
-              {userInfo?.twoBestPics?.map((img) => {
-                return (
-                  <Image
-                    key={img}
-                    source={{ uri: userInfo.twoBestPics[0] }}
-                    style={{
-                      width: responsiveScreenWidth(90),
-                      height: responsiveScreenHeight(40),
-                      resizeMode: "cover",
-                      borderRadius: 20,
-                    }}
-                  />
-                );
-              })}
+              {twoPics &&
+                twoPics.map((img, idx) => {
+                  return (
+                    <Image
+                      key={idx}
+                      source={{ uri: img }}
+                      style={{
+                        width: responsiveScreenWidth(90),
+                        height: responsiveScreenHeight(40),
+                        resizeMode: "cover",
+                        borderRadius: 20,
+                      }}
+                    />
+                  );
+                })}
             </View>
           </View>
         </BottomSheetScrollView>

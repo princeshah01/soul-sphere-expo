@@ -1,27 +1,35 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import env from "../../Constant/env";
+import axios from "axios";
+export const getChatList = createAsyncThunk("getChatList", async (token) => {
+  let response = await axios.get(env.API_BASE_URL + "/chat-list", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return response.data;
+});
 
 const ChatSlice = createSlice({
   name: "Chat",
   initialState: {
-    data: {
-      name: "prince",
-    },
+    isError: false,
+    isLoading: true,
+    ChatList: [],
   },
-  reducers: {
-    update: (state, action) => {
-      state.user = action.payload.user;
-    },
-    // logout: (state) => {
-    //   state.data = null;
-    //   state.token = null;
-    //   state.isAuthenticated = false;
-    // },
-    // updateUser: (state, action) => {
-    //   state.user = action.payload;
-    // },
-    // updateIsVerified: (state) => {
-    //   state.user.isVerified = true;
-    // },
+  extraReducers: (builder) => {
+    builder.addCase(getChatList.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.isError = false;
+      state.ChatList = action.payload?.data;
+    });
+    builder.addCase(getChatList.pending, (state, action) => {
+      state.isLoading = true;
+    });
+    builder.addCase(getChatList.rejected, (state, action) => {
+      console.log("error in chat slice", action.payload);
+      state.isError = true;
+    });
   },
 });
 

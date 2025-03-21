@@ -19,6 +19,7 @@ import env from "../../../Constant/env";
 import { ActivityIndicator } from "react-native-paper";
 import { showToast } from "../../../Components/showToast";
 import CustomButton from "../../../Components/CustomBotton";
+import NoData from "../../../Components/NoData";
 
 const Feed = ({ navigation }) => {
   const { user, token } = useSelector((store) => store.Auth);
@@ -237,14 +238,15 @@ const Feed = ({ navigation }) => {
             />
           ) : (
             <View style={styles.noData}>
-              <Text>No Data Left to Show Try Again later!!</Text>
-              <CustomButton
-                name="Reload"
-                outline={true}
-                onPress={() => {
-                  setPage((prev) => prev + 1);
-                }}
-              />
+              <NoData msg="No new profiles available" msg2="Check back later!">
+                <CustomButton
+                  name="Reload"
+                  outline={true}
+                  onPress={() => {
+                    setPage((prev) => prev + 1);
+                  }}
+                />
+              </NoData>
             </View>
           )}
         </View>

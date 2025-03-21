@@ -106,7 +106,7 @@ const CustomProfileBtn = ({
                 opacity: 0.6,
               }}
             >
-              Your Account is already Verified
+              Your Account is Verified
             </Text>
           )}
         </View>

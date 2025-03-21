@@ -30,6 +30,7 @@ const Signup = ({ navigation }) => {
   const [nameVerify, setNameVerify] = useState(null);
   const [loading, setLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
+  const [msg, setMsg] = useState("");
 
   function handleName(e) {
     setFullName(e);
@@ -56,14 +57,25 @@ const Signup = ({ navigation }) => {
   }
   function handlePassword(e) {
     setPassword(e);
-    setPasswordVerify(e.length >= 8 ? true : e.length === 0 ? null : false);
+
+    if (e !== confirmPassword) {
+      setMsg("Confirm Password should be same as password");
+    } else {
+      setMsg(null);
+    }
+
+    setPasswordVerify(e.length === 0 ? null : e.length >= 8);
   }
 
   function handleConfirmPassword(e) {
     setConfirmPassword(e);
-    setConfirmPasswordVerify(
-      e.length >= 8 ? true : e.length === 0 ? null : false
-    );
+    if (password !== e) {
+      setMsg("Confirm Password should be same as password");
+    } else {
+      setMsg(null);
+    }
+
+    setConfirmPasswordVerify(e.length === 0 ? null : e.length >= 8);
   }
 
   function handleUsername(e) {
@@ -193,6 +205,7 @@ const Signup = ({ navigation }) => {
           isDark={isDark}
           verify={passwordVerify}
         />
+
         <InputField
           name="Confirm Password"
           isPassword={true}
@@ -202,6 +215,7 @@ const Signup = ({ navigation }) => {
           isDark={isDark}
           verify={confirmPasswordVerify}
         />
+        {<Text style={{ textAlign: "center", color: "red" }}>{msg}</Text>}
       </View>
 
       <GradientButton

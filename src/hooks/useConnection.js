@@ -18,7 +18,7 @@ const useConnections = (IsFavToggle, request = null) => {
         },
       });
 
-      if (response.status === 200) {
+      if (response.status === 201) {
         dispatch(addConnection(response?.data?.data));
       }
     } catch (error) {

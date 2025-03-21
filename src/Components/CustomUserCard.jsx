@@ -18,7 +18,6 @@ import { useSelector } from "react-redux";
 import { showToast } from "./showToast";
 import { useDispatch } from "react-redux";
 import { removeRequest } from "../Store/Slice/requests";
-import { useNavigation } from "@react-navigation/native";
 
 const CustomUserCard = ({
   data,
@@ -28,7 +27,6 @@ const CustomUserCard = ({
   isToggle,
   handleNavigation,
 }) => {
-  const navigation = useNavigation();
   const dispatch = useDispatch();
   const { token } = useSelector((store) => store.Auth);
   const handleReqReview = async (status, id) => {

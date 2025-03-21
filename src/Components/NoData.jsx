@@ -47,7 +47,7 @@ const styles = StyleSheet.create({
   msg2: {
     width: responsiveWidth(60),
     fontSize: responsiveFontSize(1.8),
-    textAlign: "justify",
+    textAlign: "center",
     opacity: 0.7,
     color: Theme.light.text,
   },

@@ -22,6 +22,9 @@ const CustomDatePicker = ({ value, setValue, editable = false }) => {
       setValue(selectedDate.toDateString());
     }
   };
+  const dateToBeShown = new Date().getFullYear() - 18;
+  // console.log(dateToBeShown);
+
   return (
     <View>
       <TouchableOpacity
@@ -62,6 +65,7 @@ const CustomDatePicker = ({ value, setValue, editable = false }) => {
           display="default"
           onChange={onDateChange}
           color="red"
+          maximumDate={new Date(dateToBeShown, 11, 31)}
         />
       )}
     </View>

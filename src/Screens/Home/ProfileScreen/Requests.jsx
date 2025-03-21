@@ -8,6 +8,7 @@ import {
   responsiveFontSize,
   responsiveHeight,
 } from "react-native-responsive-dimensions";
+import NoData from "../../../Components/NoData";
 import CustomUserCard from "../../../Components/CustomUserCard";
 const Requests = ({ navigation }) => {
   const { data } = useSelector((store) => store.Requests);
@@ -40,17 +41,10 @@ const Requests = ({ navigation }) => {
             <CustomUserCard key={item._id} data={item} isRequest={true} />
           ))
         ) : (
-          <View
-            style={{
-              height: responsiveHeight(70),
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <Text style={{ fontSize: responsiveFontSize(2) }}>
-              No Data to Show
-            </Text>
-          </View>
+          <NoData
+            msg="No Request !"
+            msg2="Looks like you have no requests at the moment. Start connecting and check back soon!"
+          />
         )}
       </ScrollView>
     </View>
