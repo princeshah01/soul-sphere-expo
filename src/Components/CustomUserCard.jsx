@@ -100,8 +100,8 @@ const CustomUserCard = ({
           source={{ uri: profilePicture }}
           resizeMode="cover"
           style={{
-            width: 70,
-            height: 70,
+            width: "60%",
+            height: "90%",
             borderRadius: 40,
           }}
         />

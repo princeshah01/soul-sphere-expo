@@ -10,10 +10,11 @@ import { login } from "../../Store/Slice/Auth";
 import { showToast } from "../../Components/showToast";
 import Icon from "@expo/vector-icons/Ionicons";
 import { Theme } from "../../Constant/Theme";
-
+import { getJoin } from "../../Store/Slice/Chat";
+import { useSelector } from "react-redux";
+import LoadingScreen from "../../Components/ShimmerUI/LoadingScreen";
 const createFormData = (data) => {
   let formData = new FormData();
-
   Object.keys(data).forEach((key) => {
     if (
       key !== "profilePicture" &&
@@ -61,6 +62,9 @@ const FooterProfileSetup = ({
   setCurrentIndex,
 }) => {
   const dispatch = useDispatch();
+  const { isLoading, isError, errorMsg, successMsg } = useSelector(
+    (store) => store.Chat
+  );
   const HandleNext = async () => {
     if (currentIndex < data.length - 1) {
       flatListRef.current?.scrollToIndex({
@@ -105,7 +109,11 @@ const FooterProfileSetup = ({
           showToast("success", response?.data?.message);
           const data = response?.data?.UserProfileSetup;
           dispatch(login({ user: data, token }));
-          // await AsyncStorage.setItem("user", JSON.stringify(data));
+          //adding user to stream chat
+          dispatch(getJoin(token));
+          isError
+            ? showToast("error", errorMsg)
+            : showToast("success", successMsg);
         }
       } catch (err) {
         console.log(err);
@@ -143,7 +151,13 @@ const FooterProfileSetup = ({
       </CustomButton>
 
       <CustomButton
-        name={currentIndex == data.length - 1 && "Done"}
+        name={
+          currentIndex === data.length - 1
+            ? isLoading
+              ? "Loading"
+              : "done"
+            : null
+        }
         onPress={HandleNext}
       >
         {currentIndex != data.length - 1 && (

@@ -9,10 +9,13 @@ export const getConnections = createAsyncThunk(
       const response = await axios.get(env.API_BASE_URL + "/user/connections", {
         headers: { Authorization: `Bearer ${token}` },
       });
-      return response.data;
+      if (response.status === 200) return response.data;
+      return rejectWithValue(response.data);
     } catch (error) {
       return rejectWithValue(
-        error.response?.data || { message: "Failed to fetch connections" }
+        error.response?.data || {
+          message: "Failed to fetch connections",
+        }
       );
     }
   }
@@ -22,8 +25,8 @@ const ConnectionSlice = createSlice({
   name: "Connection",
   initialState: {
     isError: false,
-    isLoading: false,
-    data: [],
+    isLoading: true,
+    data: [{ name: "prince" }],
     errorMsg: null,
   },
   reducers: {
@@ -45,7 +48,8 @@ const ConnectionSlice = createSlice({
       .addCase(getConnections.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
-        state.errorMsg = action.payload?.message || "An error occurred";
+        console.log(action.payload);
+        state.errorMsg = action.payload?.message;
       });
   },
 });

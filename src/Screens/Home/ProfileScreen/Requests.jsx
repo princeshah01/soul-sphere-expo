@@ -4,15 +4,11 @@ import BackButton from "../../../Components/BackButton";
 import { useDarkMode } from "../../../provider/DarkModeProvider";
 import { Theme } from "../../../Constant/Theme";
 import { useSelector } from "react-redux";
-import {
-  responsiveFontSize,
-  responsiveHeight,
-} from "react-native-responsive-dimensions";
 import NoData from "../../../Components/NoData";
 import CustomUserCard from "../../../Components/CustomUserCard";
 const Requests = ({ navigation }) => {
   const { data } = useSelector((store) => store.Requests);
-  const { isDark, setIsDark } = useDarkMode();
+  const { isDark } = useDarkMode();
   return (
     <View
       style={{

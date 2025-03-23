@@ -27,7 +27,6 @@ import { showToast } from "../../Components/showToast.jsx";
 const Login = ({ navigation }) => {
   const dispatch = useDispatch();
   const { isDark } = useDarkMode();
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);

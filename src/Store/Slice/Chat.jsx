@@ -1,34 +1,51 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import env from "../../Constant/env";
 import axios from "axios";
-export const getChatList = createAsyncThunk("getChatList", async (token) => {
-  let response = await axios.get(env.API_BASE_URL + "/chat-list", {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-  return response.data;
-});
+export const getJoin = createAsyncThunk(
+  "getJoin",
+  async (token, { rejectWithValue }) => {
+    try {
+      let response = await axios.get(env.API_BASE_URL + "/join-stream", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      console.log("response of getjoin data ", response.data);
+      if (response?.status === 200) return response.data;
+      return rejectWithValue(response.data);
+    } catch (error) {
+      console.log(error.response.data);
+      return rejectWithValue(error?.response?.data);
+    }
+  }
+);
 
 const ChatSlice = createSlice({
   name: "Chat",
   initialState: {
+    isLoading: false,
     isError: false,
-    isLoading: true,
-    ChatList: [],
+    errorMsg: "",
+    successMsg: "",
+    api_key: "",
+    userChatToken: "",
+    globalChannelList: [],
+    privateChannelList: [],
   },
   extraReducers: (builder) => {
-    builder.addCase(getChatList.fulfilled, (state, action) => {
+    builder.addCase(getJoin.fulfilled, (state, action) => {
       state.isLoading = false;
       state.isError = false;
-      state.ChatList = action.payload?.data;
+      state.successMsg = action.payload?.message;
+      console.log("<>>>>><<><><<<<<<<<<<<>>>>>>>>>>>>", state.successMsg);
     });
-    builder.addCase(getChatList.pending, (state, action) => {
+    builder.addCase(getJoin.pending, (state, action) => {
       state.isLoading = true;
     });
-    builder.addCase(getChatList.rejected, (state, action) => {
+    builder.addCase(getJoin.rejected, (state, action) => {
       console.log("error in chat slice", action.payload);
       state.isError = true;
+      state.errorMsg = action.payload?.message;
     });
   },
 });

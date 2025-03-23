@@ -18,7 +18,7 @@ const getTabBarIcon = (routeName, focused, size) => {
     iconName = focused ? "home" : "home-outline";
   } else if (routeName === "Profile") {
     iconName = focused ? "person" : "person-outline";
-  } else if (routeName === "Chat") {
+  } else if (routeName === "ChitChat") {
     iconName = focused ? "chatbubble-ellipses" : "chatbubble-ellipses-outline";
   }
   return <Icon name={iconName} size={size} color={Theme.dark.primary} />;
@@ -60,7 +60,7 @@ const HomeNavigation = () => {
     >
       <Tab.Screen name="Feed" component={Feed} />
       <Tab.Screen name="Match" component={MatchStack} />
-      <Tab.Screen name="Chat" component={ChatNavigation} />
+      <Tab.Screen name="ChitChat" component={ChatNavigation} />
       <Tab.Screen name="Profile" component={ProfileNavigation} />
     </Tab.Navigator>
   );

@@ -3,11 +3,7 @@ import React, { useRef, useMemo, useEffect } from "react";
 import BottomSheet, { BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import BackButton from "../../../Components/BackButton";
 import { useDarkMode } from "../../../provider/DarkModeProvider";
-import {
-  CommonActions,
-  useNavigation,
-  useRoute,
-} from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import { Theme } from "../../../Constant/Theme";
 import {
   responsiveScreenHeight,
@@ -102,6 +98,9 @@ const ProfileView = () => {
               <ContactButton
                 name="chatbubble-outline"
                 onPress={() => {
+                  setTimeout(() => {
+                    navigation.pop();
+                  }, 10);
                   navigation.navigate("Chat", { screen: "ChatRoom" });
                 }}
               />

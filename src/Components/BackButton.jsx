@@ -6,7 +6,7 @@ import { Theme } from "../Constant/Theme";
 const BackButton = ({ isDark, navigation, style, onPress }) => {
   return (
     <TouchableOpacity
-      onPress={onPress ? onPress : () => navigation.goBack()}
+      onPress={onPress ? onPress : () => navigation.pop()}
       style={[
         {
           backgroundColor: isDark
