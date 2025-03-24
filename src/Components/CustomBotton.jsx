@@ -1,4 +1,6 @@
 import { StyleSheet, Text, TouchableOpacity } from "react-native";
+import { Theme } from "../Constant/Theme";
+import { useDarkMode } from "../provider/DarkModeProvider";
 
 const CustomButton = ({
   children,
@@ -9,6 +11,7 @@ const CustomButton = ({
   isDisabled = false,
   styleContainer,
 }) => {
+  const { isDark } = useDarkMode();
   return (
     <TouchableOpacity
       disabled={isDisabled}
@@ -23,7 +26,20 @@ const CustomButton = ({
       ]}
     >
       {name && (
-        <Text style={[styles.text, outline && styles.outlineText]}>{name}</Text>
+        <Text
+          style={[
+            styles.text,
+            outline
+              ? styles.outlineText
+              : {
+                  color: isDark
+                    ? Theme.dark.background
+                    : Theme.light.background,
+                },
+          ]}
+        >
+          {name}
+        </Text>
       )}
       {children}
     </TouchableOpacity>
@@ -51,7 +67,6 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 16,
     fontWeight: "bold",
-    color: "white",
   },
   outlineText: {
     color: "#a83ef5",

@@ -12,7 +12,6 @@ import Card from "./Card";
 import Swiper from "react-native-deck-swiper";
 import { Theme } from "../../../Constant/Theme";
 import { useDarkMode } from "../../../provider/DarkModeProvider";
-import Logo from "../../../Components/Logo";
 import { useSelector } from "react-redux";
 import axios from "axios";
 import env from "../../../Constant/env";
@@ -20,8 +19,8 @@ import { ActivityIndicator } from "react-native-paper";
 import { showToast } from "../../../Components/showToast";
 import CustomButton from "../../../Components/CustomBotton";
 import NoData from "../../../Components/NoData";
-
-const Feed = ({ navigation }) => {
+import SvgComponent from "../../../Components/Slider";
+const Feed = ({ filterOpen }) => {
   const { user, token } = useSelector((store) => store.Auth);
   const [isLoading, setIsLoading] = useState(true);
   const [data, setData] = useState([]);
@@ -94,173 +93,184 @@ const Feed = ({ navigation }) => {
     <View
       style={{
         flex: 1,
+        position: "relative",
         backgroundColor: isDark
           ? Theme.dark.background
           : Theme.light.background,
-        zIndex: 10,
       }}
     >
-      <TouchableOpacity
-        activeOpacity={1}
-        onPress={() => {
-          navigation.navigate("Profile");
-        }}
-        style={{
-          height: height * 0.08,
-          backgroundColor: "white",
-          flexDirection: "row",
-          alignItems: "center",
-          paddingHorizontal: 20,
-          backgroundColor: "transparent",
-          gap: 10,
-        }}
-      >
-        <ProfileImage profilePicture={user.profilePicture} size={50} />
-        <View style={{ width: width * 0.6 }}>
-          <Text
-            style={{
-              fontSize: 16,
-              opacity: 0.8,
-              color: isDark ? Theme.dark.text : Theme.light.text,
+      <View style={{ zIndex: 10 }}>
+        <View
+          style={{
+            height: height * 0.08,
+            backgroundColor: "white",
+            flexDirection: "row",
+            alignItems: "center",
+            paddingHorizontal: 20,
+            backgroundColor: "transparent",
+            gap: 10,
+          }}
+        >
+          <ProfileImage profilePicture={user.profilePicture} size={50} />
+          <View style={{ width: width * 0.6 }}>
+            <Text
+              style={{
+                fontSize: 16,
+                opacity: 0.8,
+                color: isDark ? Theme.dark.text : Theme.light.text,
+              }}
+            >
+              {greetMsg}
+            </Text>
+            <Text
+              style={{
+                fontSize: 20,
+                fontWeight: 500,
+                color: isDark ? Theme.dark.text : Theme.light.text,
+                textTransform: "capitalize",
+              }}
+            >
+              {user.fullName}
+            </Text>
+          </View>
+          <TouchableOpacity
+            onPress={() => {
+              filterOpen((prev) => 1);
             }}
           >
-            {greetMsg}
-          </Text>
-          <Text
-            style={{
-              fontSize: 20,
-              fontWeight: 500,
-              color: isDark ? Theme.dark.text : Theme.light.text,
-              textTransform: "capitalize",
-            }}
-          >
-            {user.fullName}
-          </Text>
+            <SvgComponent
+              size={28}
+              color={isDark ? Theme.dark.text : Theme.light.text}
+            />
+          </TouchableOpacity>
         </View>
-        {/* here instead of logo will be showing a filter icon to filter feed data */}
-        <Logo size={40} />
-      </TouchableOpacity>
-      <View
-        style={{
-          height: height * 0.82,
-          width,
-          padding: 10,
-          backgroundColor: "transparent",
-          zIndex: 100,
-        }}
-      >
-        {isLoading ? (
-          <View
-            style={{
-              flex: 1,
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <ActivityIndicator />
-          </View>
-        ) : (
-          <View
-            style={{
-              flex: 1,
-              marginTop: -60,
-              marginLeft: -10,
-              // backgroundColor: "red",
-            }}
-          >
-            {data?.length > 0 && data.length > 0 ? (
-              <Swiper
-                key={data.length}
-                cards={data}
-                verticalSwipe={false}
-                renderCard={(item) => <Card user={item} />}
-                stackSize={2}
-                backgroundColor="transparent"
-                cardStyle={{
-                  width: width * 0.9,
-                  height: height * 0.8,
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-                containerStyle={{
-                  flex: 1,
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-                onSwipedAll={() => {
-                  console.log("getting new data");
-                  setPage((prev) => prev + 1);
-                }}
-                onSwipedLeft={(idx) => {
-                  handleSwipe("ignored", data[idx]._id);
-                  console.log("leftSwiped user feed/index.js " + data[idx]._id);
-                }}
-                onSwipedRight={(idx) => {
-                  handleSwipe("interested", data[idx]._id);
-                  console.log("RightSwiped user feed/index.js", data[idx]._id);
-                }}
-                overlayLabels={{
-                  left: {
-                    title: "NOPE",
-                    style: {
-                      label: {
-                        backgroundColor: "#f07380EE",
-                        borderColor: "#eb1329",
-                        color: "#eb1329",
-                        borderWidth: 2,
-                        transform: [{ rotate: "-30deg" }],
-                      },
-                      wrapper: {
-                        flexDirection: "column",
-                        alignItems: "flex-end",
-                        justifyContent: "flex-start",
-                        position: "absolute",
-                        top: 150,
-                        right: 40,
-                      },
-                    },
-                  },
-                  right: {
-                    title: "LIKE",
-                    style: {
-                      label: {
-                        backgroundColor: "#a8eb718c",
-                        borderColor: "#73e813",
-                        color: "#73e813",
-                        borderWidth: 2,
-                        transform: [{ rotate: "30deg" }],
-                      },
-                      wrapper: {
-                        flexDirection: "column",
-                        alignItems: "flex-start",
-                        justifyContent: "flex-start",
-                        position: "absolute",
-                        top: 150,
-                        left: 40,
+        <View
+          style={{
+            height: height * 0.82,
+            width,
+            padding: 10,
+            backgroundColor: "transparent",
+            zIndex: 100,
+          }}
+        >
+          {isLoading ? (
+            <View
+              style={{
+                flex: 1,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <ActivityIndicator />
+            </View>
+          ) : (
+            <View
+              style={{
+                flex: 1,
+                marginTop: -60,
+                marginLeft: -10,
+                // backgroundColor: "red",
+              }}
+            >
+              {data?.length > 0 && data.length > 0 ? (
+                <Swiper
+                  key={data.length}
+                  cards={data}
+                  verticalSwipe={false}
+                  renderCard={(item) => <Card user={item} />}
+                  stackSize={2}
+                  backgroundColor="transparent"
+                  cardStyle={{
+                    width: width * 0.9,
+                    height: height * 0.8,
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                  containerStyle={{
+                    flex: 1,
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                  onSwipedAll={() => {
+                    console.log("getting new data");
+                    setPage((prev) => prev + 1);
+                  }}
+                  onSwipedLeft={(idx) => {
+                    handleSwipe("ignored", data[idx]._id);
+                    console.log(
+                      "leftSwiped user feed/index.js " + data[idx]._id
+                    );
+                  }}
+                  onSwipedRight={(idx) => {
+                    handleSwipe("interested", data[idx]._id);
+                    console.log(
+                      "RightSwiped user feed/index.js",
+                      data[idx]._id
+                    );
+                  }}
+                  overlayLabels={{
+                    left: {
+                      title: "NOPE",
+                      style: {
+                        label: {
+                          backgroundColor: "#f07380EE",
+                          borderColor: "#eb1329",
+                          color: "#eb1329",
+                          borderWidth: 2,
+                          transform: [{ rotate: "-30deg" }],
+                        },
+                        wrapper: {
+                          flexDirection: "column",
+                          alignItems: "flex-end",
+                          justifyContent: "flex-start",
+                          position: "absolute",
+                          top: 150,
+                          right: 40,
+                        },
                       },
                     },
-                  },
-                }}
-                animateOverlayLabelsOpacity={true}
-              />
-            ) : (
-              <View style={styles.noData}>
-                <NoData
-                  msg="No new profiles available"
-                  msg2="Check back later!"
-                >
-                  <CustomButton
-                    name="Reload"
-                    outline={true}
-                    onPress={() => {
-                      setPage((prev) => prev + 1);
-                    }}
-                  />
-                </NoData>
-              </View>
-            )}
-          </View>
-        )}
+                    right: {
+                      title: "LIKE",
+                      style: {
+                        label: {
+                          backgroundColor: "#a8eb718c",
+                          borderColor: "#73e813",
+                          color: "#73e813",
+                          borderWidth: 2,
+                          transform: [{ rotate: "30deg" }],
+                        },
+                        wrapper: {
+                          flexDirection: "column",
+                          alignItems: "flex-start",
+                          justifyContent: "flex-start",
+                          position: "absolute",
+                          top: 150,
+                          left: 40,
+                        },
+                      },
+                    },
+                  }}
+                  animateOverlayLabelsOpacity={true}
+                />
+              ) : (
+                <View style={styles.noData}>
+                  <NoData
+                    msg="No new profiles available"
+                    msg2="Check back later!"
+                  >
+                    <CustomButton
+                      name="Reload"
+                      outline={true}
+                      onPress={() => {
+                        setPage((prev) => prev + 1);
+                      }}
+                    />
+                  </NoData>
+                </View>
+              )}
+            </View>
+          )}
+        </View>
       </View>
     </View>
   );

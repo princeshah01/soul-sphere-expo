@@ -1,5 +1,5 @@
 import { ScrollView, View, StyleSheet, Dimensions } from "react-native";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useState } from "react";
 import { useFocusEffect } from "@react-navigation/native";
 import CustomUserCard from "../../../Components/CustomUserCard.jsx";
 import SearchBar from "../../../Components/SearchBar.jsx";

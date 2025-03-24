@@ -19,7 +19,7 @@ import env from "./src/Constant/env";
 import { showToast } from "./src/Components/showToast";
 import "react-native-gesture-handler";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-
+// import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 function MainApp() {
   const Auth = useSelector((store) => store.Auth.isAuthenticated);
   const dispatch = useDispatch();
