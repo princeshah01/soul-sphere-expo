@@ -10,9 +10,9 @@ import { login } from "../../Store/Slice/Auth";
 import { showToast } from "../../Components/showToast";
 import Icon from "@expo/vector-icons/Ionicons";
 import { Theme } from "../../Constant/Theme";
-import { getJoin } from "../../Store/Slice/Chat";
+import { getJoin } from "../../Store/Slice/ChatSlice";
 import { useSelector } from "react-redux";
-import LoadingScreen from "../../Components/ShimmerUI/LoadingScreen";
+// import LoadingScreen from "../../Components/ShimmerUI/LoadingScreen";
 const createFormData = (data) => {
   let formData = new FormData();
   Object.keys(data).forEach((key) => {
@@ -111,9 +111,9 @@ const FooterProfileSetup = ({
           dispatch(login({ user: data, token }));
           //adding user to stream chat
           dispatch(getJoin(token));
-          isError
-            ? showToast("error", errorMsg)
-            : showToast("success", successMsg);
+          // isError
+          //   ? showToast("error", errorMsg)
+          //   : showToast("success", successMsg);
         }
       } catch (err) {
         console.log(err);

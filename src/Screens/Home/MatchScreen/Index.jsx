@@ -1,6 +1,6 @@
 import { ScrollView, View, StyleSheet, Dimensions } from "react-native";
 import React, { useCallback, useEffect, useState } from "react";
-// import { useFocusEffect } from "@react-navigation/native";
+import { useFocusEffect } from "@react-navigation/native";
 import CustomUserCard from "../../../Components/CustomUserCard.jsx";
 import SearchBar from "../../../Components/SearchBar.jsx";
 import Header from "../../ProfileSetup/Header";
@@ -19,15 +19,15 @@ const UserConnection = ({ navigation }) => {
   const { token } = useSelector((store) => store.Auth);
   const dispatch = useDispatch();
 
-  // useFocusEffect(
-  //   useCallback(() => {
-  //     dispatch(getConnections(token));
-  //   }, [token, IsFavToggle])
-  // );
+  useFocusEffect(
+    useCallback(() => {
+      dispatch(getConnections(token));
+    }, [token, IsFavToggle])
+  );
 
-  useEffect(() => {
-    dispatch(getConnections(token));
-  }, [token, IsFavToggle]);
+  // useEffect(() => {
+  //   dispatch(getConnections(token));
+  // }, [token, IsFavToggle]);
 
   const { data, isLoading, isError, errorMsg } = useSelector(
     (store) => store.Connection

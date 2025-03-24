@@ -10,11 +10,11 @@ export const getJoin = createAsyncThunk(
           Authorization: `Bearer ${token}`,
         },
       });
-      console.log("response of getjoin data ", response.data);
+      // console.log("response of getjoin data ", response.data);
       if (response?.status === 200) return response.data;
       return rejectWithValue(response.data);
     } catch (error) {
-      console.log(error.response.data);
+      // console.log(error.response.data);
       return rejectWithValue(error?.response?.data);
     }
   }

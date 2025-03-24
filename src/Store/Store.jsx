@@ -3,7 +3,7 @@ import Authreducer from "./Slice/Auth";
 import Requestreducer from "./Slice/requests";
 import Profilereducer from "./Slice/ProfileSetup";
 import Connectionreducer from "./Slice/ConnectionSlice";
-import Chatreducer from "./Slice/Chat";
+import Chatreducer from "./Slice/ChatSlice";
 const AppStore = configureStore({
   reducer: {
     Auth: Authreducer,
