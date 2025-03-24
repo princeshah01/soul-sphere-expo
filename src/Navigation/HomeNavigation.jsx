@@ -3,7 +3,13 @@ import Icon from "@expo/vector-icons/Ionicons";
 import React, { useState, useCallback } from "react";
 import { Theme } from "../Constant/Theme";
 import { useDarkMode } from "../provider/DarkModeProvider";
-import { View, Text, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Touchable,
+  TouchableOpacity,
+} from "react-native";
 import ProfileNavigation from "./ProfileNavigation";
 import Feed from "../Screens/Home/Feed/Index";
 import ChatNavigation from "./ChatNavigation"; // will use later
@@ -81,6 +87,10 @@ const Home = () => {
   const [values, setValues] = useState([18, 99]);
   const [index, setIndex] = useState(-1);
   const [showLabel, setShowLabel] = useState(false);
+  const [selectedGender, setSelectedGender] = useState("");
+  const Gender = ["Male", "Female", "Non-binary"];
+  console.log(selectedGender);
+
   return (
     <>
       <HomeNavigation filterOpen={setIndex} />
@@ -146,15 +156,34 @@ const Home = () => {
                 alignItems: "center",
               }}
             >
-              <View style={styles.genderBtn}>
-                <Text style={styles.genderText}>Male</Text>
-              </View>
-              <View style={styles.genderBtn}>
-                <Text style={styles.genderText}>Female</Text>
-              </View>
-              <View style={styles.genderBtn}>
-                <Text style={styles.genderText}>Any</Text>
-              </View>
+              {Gender.map((g) => (
+                <TouchableOpacity
+                  onPress={() => {
+                    if (selectedGender === g) {
+                      setSelectedGender("");
+                      return;
+                    }
+                    setSelectedGender(g);
+                  }}
+                  style={[
+                    styles.genderBtn,
+                    g === selectedGender && { backgroundColor: Theme.primary },
+                  ]}
+                >
+                  <Text
+                    style={[
+                      styles.genderText,
+                      g === selectedGender && {
+                        color: isDark
+                          ? Theme.dark.background
+                          : Theme.light.background,
+                      },
+                    ]}
+                  >
+                    {g}
+                  </Text>
+                </TouchableOpacity>
+              ))}
             </View>
           </View>
           {/* age section */}
@@ -223,6 +252,7 @@ const Home = () => {
                 min={18}
                 max={100}
                 step={1}
+                sliderLength={responsiveWidth(60)}
                 markerStyle={{
                   height: 20,
                   width: 20,
@@ -255,7 +285,14 @@ const Home = () => {
               justifyContent: "space-between",
             }}
           >
-            <CustomButton outline={true} name="Reset" />
+            <CustomButton
+              outline={true}
+              name="Reset"
+              onPress={() => {
+                setSelectedGender("");
+                setValues([18, 99]);
+              }}
+            />
             <CustomButton name="Apply" />
           </View>
         </BottomSheetView>
