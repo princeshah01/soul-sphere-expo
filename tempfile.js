@@ -1,94 +1,112 @@
-{
-    data?.length > 0 &&
-        data.length > 0 ? (
-        <Swiper
-            key={data.length}
-            cards={data}
-            verticalSwipe={false}
-            renderCard={(item) => <Card user={item} />}
-            stackSize={2}
-            backgroundColor="transparent"
-            cardStyle={{
-                width: width * 0.9,
-                height: height * 0.8,
-                justifyContent: "center",
-                alignItems: "center",
-            }}
-            containerStyle={{
-                flex: 1,
-                justifyContent: "center",
-                alignItems: "center",
-            }}
-            onSwipedAll={() => {
-                console.log("getting new data");
-                setPage((prev) => prev + 1);
-            }}
-            onSwipedLeft={(idx) => {
-                handleSwipe("ignored", data[idx]._id);
-                console.log("leftSwiped user feed/index.js " + data[idx]._id);
-            }}
-            onSwipedRight={(idx) => {
-                handleSwipe("interested", data[idx]._id);
-                console.log("RightSwiped user feed/index.js", data[idx]._id);
-            }}
-            overlayLabels={{
-                left: {
-                    title: "NOPE",
-                    style: {
-                        label: {
-                            backgroundColor: "#f07380EE",
-                            borderColor: "#eb1329",
-                            color: "#eb1329",
-                            borderWidth: 2,
-                            transform: [{ rotate: "-30deg" }],
-                        },
-                        wrapper: {
-                            flexDirection: "column",
-                            alignItems: "flex-end",
-                            justifyContent: "flex-start",
-                            position: "absolute",
-                            top: 150,
-                            right: 40,
-                        },
-                    },
-                },
-                right: {
-                    title: "LIKE",
-                    style: {
-                        label: {
-                            backgroundColor: "#a8eb718c",
-                            borderColor: "#73e813",
-                            color: "#73e813",
-                            borderWidth: 2,
-                            transform: [{ rotate: "30deg" }],
-                        },
-                        wrapper: {
-                            flexDirection: "column",
-                            alignItems: "flex-start",
-                            justifyContent: "flex-start",
-                            position: "absolute",
-                            top: 150,
-                            left: 40,
-                        },
-                    },
-                },
-            }}
-            animateOverlayLabelsOpacity={true}
-        />
-    ) : (
-        <View style={styles.noData}>
-            <NoData msg="No new profiles available" msg2="Check back later!">
-                <CustomButton
-                    name="Reload"
-                    outline={true}
-                    onPress={() => {
-                        setPage((prev) => prev + 1);
-                    }}
-                />
-            </NoData>
-        </View>
-    )
-}
+import { StyleSheet, Text, View } from "react-native";
+import React, { useCallback, useEffect, useState } from "react";
+import { createStackNavigator } from "@react-navigation/stack";
+import ChatScreen from "../Screens/Home/ChatScreen/Chat";
+import ChatRoom from "../Screens/Home/ChatScreen/ChatRoom";
+import { StreamChat } from "stream-chat";
+import { OverlayProvider, Chat } from "stream-chat-expo";
+import { useSelector } from "react-redux";
+import { decode } from "base-64";
+import { useFocusEffect } from "@react-navigation/native";
+// const theme = {
+//   colors: { black: "#000000" },
+// };
+
+const ChatStack = createStackNavigator();
+
+const CallRoom = () => {
+  return (
+    <View>
+      <Text>Coming Soon</Text>
+    </View>
+  );
+};
+const chatClient = StreamChat.getInstance("3nxbz29qa2ku", {
+  timeout: 6000,
+  enableWSFallback: true,
+});
+
+const ChatNavigation = () => {
+  const { streamApiKey, chatToken } = useSelector((store) => store.Auth);
+  const apikey = decode(streamApiKey).split("-")[0];
+  console.log("🚀 ~ ChatNavigation ~ apikey:", apikey);
+
+  const { token, user } = useSelector((store) => store.Auth);
+  const [isConnected, setIsConnected] = useState(false);
+  const [error, setError] = useState(null);
+
+  console.log("User:", user);
+  console.log("Token:", token);
+
+  useFocusEffect(
+    useCallback(() => {
+      if (!token || !user?._id) {
+        console.log("❌ No token or user found!");
+        return;
+      }
+
+      const connectUser = async () => {
+        try {
+          console.log("🔄 Connecting user:", user.id);
+
+          await chatClient.connectUser(
+            {
+              id: user._id.toString(),
+              name: user.fullName,
+              image: user.profilePicture,
+            },
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjdkY2Y4ZjU0ZDljMmJhNTNiODY3ZWFkIn0.VumvZYQJAWgsl4gf6or0Vob2GL88X84FHp_27UJT-Es"
+          );
+
+          console.log("✅ User connected successfully!");
+          setIsConnected(true);
+        } catch (error) {
+          console.error("❌ Error connecting user:", error);
+          setError(error.message);
+          setIsConnected(false);
+        }
+      };
+
+      connectUser();
+
+      return () => {
+        console.log("🔌 Disconnecting user...");
+        chatClient.disconnectUser();
+      };
+    }, [token, user])
+  );
+
+  if (error) {
+    return <Text style={{ color: "red" }}>⚠️ Error: {error}</Text>;
+  }
+
+  if (!isConnected) {
+    return <Text>Loading...</Text>;
+  }
+
+  return (
+    <OverlayProvider value={{ style: theme }}>
+      <Chat client={chatClient}>
+        <ChatStack.Navigator
+          initialRouteName="Chat"
+          screenOptions={{
+            headerStyle: {
+              height: 60,
+            },
+          }}
+        >
+          <ChatStack.Screen name="Chat" component={ChatScreen} />
+          <ChatStack.Screen name="ChatRoom" component={ChatRoom} />
+          <ChatStack.Screen name="Call" component={CallRoom} />
+        </ChatStack.Navigator>
+      </Chat>
+    </OverlayProvider>
+  );
+};
+
+export default ChatNavigation;
+
+const styles = StyleSheet.create({});
 
 
 
@@ -103,15 +121,53 @@
 
 
 
-              <View style={styles.container}>
-                <ShimmerPlaceholder
-                  shimmerColors={["#e0e0e0", "#f5f5f5", "#e0e0e0"]}
-                  autoRun={true} // Ensures shimmer effect runs
-                  duration={1000} // Adjust speed of shimmer
-                  LinearGradient={LinearGradient} // Correct prop name
-                  style={styles.shimmerBox}
-                />
-              </View>
+
+
+
+
+
+/////    chat Room 
+
+
+
+
+import { StyleSheet, Text, View } from "react-native";
+import React, { useEffect } from "react";
+import { Channel, MessageList, MessageInput } from "stream-chat-expo";
+// import { useChatContext } from "../../../provider/ChatProvider";
+
+const ChatRoom = ({ navigation }) => {
+  const { currentChannel } = useChatContext();
+  console.log(currentChannel);
+  useEffect(() => {
+    navigation.setOptions({ title: currentChannel?._data?.name || "channel" });
+  }, [currentChannel?._data?.name]);
+  return (
+    <Channel channel={currentChannel} audioRecordingEnabled>
+      <MessageList />
+      <MessageInput />
+    </Channel>
+  );
+};
+
+export default ChatRoom;
+
+const styles = StyleSheet.create({});
+
+// import { StyleSheet, Text, View } from "react-native";
+// import React from "react";
+
+// const ChatRoom = () => {
+//   return (
+//     <View>
+//       <Text>ChatRoom</Text>
+//     </View>
+//   );
+// };
+
+// export default ChatRoom;
+
+// const styles = StyleSheet.create({});
 
 
 
@@ -122,24 +178,76 @@
 
 
 
+/// chat 
+import React, { useCallback, useState } from "react";
+import { ChannelList } from "stream-chat-expo";
+import { useSelector } from "react-redux";
+import env from "../../../Constant/env";
+import axios from "axios";
+import { useFocusEffect } from "@react-navigation/native";
+import { ActivityIndicator } from "react-native-paper";
+import { View, Text } from "react-native";
+import { Theme } from "../../../Constant/Theme.js";
 
+const Chat = () => {
+  const { token } = useSelector((store) => store.Auth);
+  const [channel, setChannel] = useState([]);
+  const [loading, setLoading] = useState(true);
 
+  useFocusEffect(
+    useCallback(() => {
+      let isActive = true;
 
- <NoData
-                    msg="No matches yet?"
-                    msg2="Don’t rush! great things take time. Your person is coming! ❤"
-                  >
-                    <CustomButton
-                      name="Explore Now"
-                      outline={true}
-                      onPress={() => {
-                        navigation.jumpTo("Feed");
-                      }}
-                    />
-                  </NoData>
+      const getData = async () => {
+        try {
+          const response = await axios.get(
+            env.API_BASE_URL + "/user/channels",
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            }
+          );
 
+          if (response.status === 200 && isActive) {
+            setChannel(response?.data?.channels || []);
+          }
+        } catch (error) {
+          console.log(error.response?.data || "Error fetching channels");
+        } finally {
+          if (isActive) setLoading(false);
+        }
+      };
 
-{
-    
-      )
-}
+      getData();
+
+      return () => {
+        isActive = false;
+      };
+    }, [token])
+  );
+
+  if (loading) {
+    return <ActivityIndicator />;
+  }
+
+  if (channel.length > 0) {
+    console.log(
+      "Channel ID:",
+      channel[0]?.id,
+      "Channel Name:",
+      channel[0]?.name,
+      "Members:",
+      channel[0]?.members
+    );
+  }
+
+  const filters =
+    channel.length > 0 ? { id: { $in: channel.map((c) => c.id) } } : {};
+
+  return (
+    <View style={{ flex: 1, padding: 20, borderRadius: 30 }}>
+      <ChannelList filters={filters} />
+    </View>
+  );
+};
+
+export default Chat;

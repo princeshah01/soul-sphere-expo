@@ -20,7 +20,7 @@ import { showToast } from "../../../Components/showToast";
 import CustomButton from "../../../Components/CustomBotton";
 import NoData from "../../../Components/NoData";
 import SvgComponent from "../../../Components/Slider";
-const Feed = ({ filterOpen }) => {
+const Feed = ({ filterOpen, bottomSheetRef, isOpen }) => {
   const { user, token } = useSelector((store) => store.Auth);
   const [isLoading, setIsLoading] = useState(true);
   const [data, setData] = useState([]);
@@ -135,7 +135,13 @@ const Feed = ({ filterOpen }) => {
           </View>
           <TouchableOpacity
             onPress={() => {
-              filterOpen((prev) => 1);
+              console.log(isOpen);
+              if (isOpen) {
+                bottomSheetRef.current.close();
+                return;
+              }
+              filterOpen(true);
+              bottomSheetRef?.current.snapToIndex(0);
             }}
           >
             <SvgComponent

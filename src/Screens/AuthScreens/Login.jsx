@@ -77,6 +77,8 @@ const Login = ({ navigation }) => {
           login({
             user: data.user,
             token: data.token,
+            streamApiKey: data.streamApiKey,
+            chatToken: data.chatToken,
           })
         );
 

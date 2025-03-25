@@ -6,12 +6,16 @@ const AuthSlice = createSlice({
     isAuthenticated: false,
     token: null,
     user: null,
+    streamApiKey: null,
+    chatToken: null,
   },
   reducers: {
     login: (state, action) => {
       state.user = action.payload.user;
       state.token = action.payload.token;
       state.isAuthenticated = true;
+      state.streamApiKey = action.payload.streamApiKey;
+      state.chatToken = action.payload.chatToken;
     },
     logout: (state) => {
       state.data = null;

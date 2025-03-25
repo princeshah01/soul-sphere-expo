@@ -1,16 +1,12 @@
 import { StyleSheet, Text, View } from "react-native";
-import React, { useEffect } from "react";
-import { Channel, MessageList, MessageInput } from "stream-chat-expo";
-// import { useChatContext } from "../../../provider/ChatProvider";
+import React from "react";
+import { Channel, MessageInput, MessageList } from "stream-chat-expo";
 
-const ChatRoom = ({ navigation }) => {
-  const { currentChannel } = useChatContext();
-  console.log(currentChannel);
-  useEffect(() => {
-    navigation.setOptions({ title: currentChannel?._data?.name || "channel" });
-  }, [currentChannel?._data?.name]);
+const ChatRoom = ({ navigation, route }) => {
+  const { SelectedChannel } = route?.params;
+  console.log(SelectedChannel);
   return (
-    <Channel channel={currentChannel} audioRecordingEnabled>
+    <Channel channel={SelectedChannel}>
       <MessageList />
       <MessageInput />
     </Channel>
@@ -20,18 +16,3 @@ const ChatRoom = ({ navigation }) => {
 export default ChatRoom;
 
 const styles = StyleSheet.create({});
-
-// import { StyleSheet, Text, View } from "react-native";
-// import React from "react";
-
-// const ChatRoom = () => {
-//   return (
-//     <View>
-//       <Text>ChatRoom</Text>
-//     </View>
-//   );
-// };
-
-// export default ChatRoom;
-
-// const styles = StyleSheet.create({});

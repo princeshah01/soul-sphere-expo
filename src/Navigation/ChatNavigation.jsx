@@ -1,87 +1,57 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text } from "react-native";
 import React, { useEffect, useState } from "react";
-import { createStackNavigator } from "@react-navigation/stack";
-import ChatScreen from "../Screens/Home/ChatScreen/Chat";
-import ChatRoom from "../Screens/Home/ChatScreen/ChatRoom";
+import { useSelector } from "react-redux";
+// import { StreamChat } from "stream-chat";
 import { StreamChat } from "stream-chat";
 import { OverlayProvider, Chat } from "stream-chat-expo";
-import { useSelector } from "react-redux";
-
-const theme = {
-  colors: { black: "#000000" },
+import { createStackNavigator } from "@react-navigation/stack";
+import ChatRoom from "../Screens/Home/ChatScreen/ChatRoom";
+import ChatScreen from "../Screens/Home/ChatScreen/Chat";
+import LoadingScreen from "../Components/ShimmerUI/LoadingScreen";
+let CallRoom = () => {
+  return <Text>Call</Text>;
 };
 
-const ChatStack = createStackNavigator();
-
-// ✅ Provide your Stream API Key
-const STREAM_API_KEY = "4jkwpacebmuc"; // Replace with your actual API key
-
-// ✅ Initialize StreamChat client
-const chatClient = StreamChat.getInstance(STREAM_API_KEY);
-
-const CallRoom = () => {
-  return (
-    <View>
-      <Text>Coming Soon</Text>
-    </View>
-  );
-};
+let client = StreamChat.getInstance("3nxbz29qa2ku");
+let ChatStack = createStackNavigator();
 
 const ChatNavigation = () => {
-  const { token, user } = useSelector((store) => store.Auth);
+  const { chatToken, token, user } = useSelector((store) => store.Auth);
   const [isConnected, setIsConnected] = useState(false);
-  const [error, setError] = useState(null);
-
-  console.log("User:", user);
-  console.log("Token:", token);
-
-  useEffect(() => {
-    if (!token || !user?._id) {
-      console.log("❌ No token or user found!");
-      return;
-    }
-
-    const connectUser = async () => {
-      try {
-        console.log("🔄 Connecting user:", user.id);
-
-        await chatClient.connectUser(
-          {
-            id: user._id,
-            name: user.fullName,
-            image: user.profilePicture,
-          },
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjdkY2Y4ZjU0ZDljMmJhNTNiODY3ZWFkIn0.IS_xC7LHiUqD9CxgZxUgHZJWgYWuqHcu9YPfwHSy2Ow" // 🔹 Use token from Redux, not hardcoded!
-        );
-
-        console.log("✅ User connected successfully!");
-        setIsConnected(true);
-      } catch (error) {
-        console.error("❌ Error connecting user:", error);
-        setError(error.message);
-        setIsConnected(false);
+  const getUserConnected = async () => {
+    setIsConnected(false);
+    try {
+      if (!token && !user) {
+        throw new Error("no token and user found");
       }
-    };
-
-    connectUser();
-
+      console.log(client);
+      await client.connectUser(
+        {
+          id: user._id,
+          name: user.fullName,
+          email: user.email,
+        },
+        chatToken
+      );
+      console.log("connected done");
+      setIsConnected(true);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  useEffect(() => {
+    getUserConnected();
     return () => {
-      console.log("🔌 Disconnecting user...");
-      chatClient.disconnectUser();
+      console.log("disconnected");
+      client.disconnectUser();
     };
   }, [token, user]);
 
-  if (error) {
-    return <Text style={{ color: "red" }}>⚠️ Error: {error}</Text>;
-  }
-
-  if (!isConnected) {
-    return <Text>Loading...</Text>;
-  }
-
-  return (
-    <OverlayProvider value={{ style: theme }}>
-      <Chat client={chatClient}>
+  return !isConnected ? (
+    <LoadingScreen />
+  ) : (
+    <OverlayProvider>
+      <Chat client={client}>
         <ChatStack.Navigator
           initialRouteName="Chat"
           screenOptions={{

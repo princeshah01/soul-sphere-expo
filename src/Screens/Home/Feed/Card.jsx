@@ -12,6 +12,8 @@ import Icon from "@expo/vector-icons/Ionicons";
 import InterestRender from "./InterestRender";
 import { Theme } from "../../../Constant/Theme";
 import { useDarkMode } from "../../../provider/DarkModeProvider";
+import { LinearGradient } from "expo-linear-gradient";
+
 const Card = ({ user }) => {
   // console.log("card data form card.js", user);
   const { isDark } = useDarkMode();
@@ -36,46 +38,57 @@ const Card = ({ user }) => {
         <View style={styles.imageContainer}>
           <Image source={{ uri: user.profilePicture }} style={styles.image} />
           <View style={styles.infoContainer}>
-            {user.isVerified && (
-              <Text
-                style={{
-                  backgroundColor: Theme.primary + "B3",
-                  color: Theme.light.background,
-                  alignSelf: "flex-start",
-                  padding: 5,
-                  paddingHorizontal: 10,
-                  borderRadius: 15,
-                  fontSize: 16,
-                  fontWeight: 700,
-                }}
-              >
-                Verified
-              </Text>
-            )}
-            <Text
-              style={[
-                styles.textname,
-                { color: Theme.dark.text, textTransform: "capitalize" },
-              ]}
+            <LinearGradient
+              colors={["transparent", Theme.primary + "B3"]}
+              style={{ width: width, height: height * 0.3, paddingLeft: 20 }}
             >
-              {user.fullName + ", " + user.age}
-            </Text>
-            <View style={[styles.row]}>
-              <Icon
-                name="person-circle-outline"
-                size={20}
-                color={Theme.dark.text}
-              />
-              <Text style={[styles.text, { color: Theme.dark.text }]}>
-                {user.gender}
-              </Text>
-            </View>
-            <View style={styles.row}>
-              <Icon name="location-outline" size={20} color={Theme.dark.text} />
-              <Text style={[styles.text, { color: Theme.dark.text }]}>
-                {user.locationName}
-              </Text>
-            </View>
+              <View style={{ position: "absolute", bottom: 20, left: 20 }}>
+                {user.isVerified && (
+                  <Text
+                    style={{
+                      backgroundColor: Theme.primary + "B3",
+                      color: Theme.light.background,
+                      alignSelf: "flex-start",
+                      padding: 5,
+                      paddingHorizontal: 10,
+                      borderRadius: 15,
+                      fontSize: 16,
+                      fontWeight: 700,
+                    }}
+                  >
+                    Verified
+                  </Text>
+                )}
+                <Text
+                  style={[
+                    styles.textname,
+                    { color: Theme.dark.text, textTransform: "capitalize" },
+                  ]}
+                >
+                  {user.fullName + ", " + user.age}
+                </Text>
+                <View style={[styles.row]}>
+                  <Icon
+                    name="person-circle-outline"
+                    size={20}
+                    color={Theme.dark.text}
+                  />
+                  <Text style={[styles.text, { color: Theme.dark.text }]}>
+                    {user.gender}
+                  </Text>
+                </View>
+                <View style={styles.row}>
+                  <Icon
+                    name="location-outline"
+                    size={20}
+                    color={Theme.dark.text}
+                  />
+                  <Text style={[styles.text, { color: Theme.dark.text }]}>
+                    {user.locationName}
+                  </Text>
+                </View>
+              </View>
+            </LinearGradient>
           </View>
         </View>
 
@@ -163,8 +176,7 @@ const styles = StyleSheet.create({
   },
   infoContainer: {
     position: "absolute",
-    bottom: 20,
-    left: 20,
+    bottom: 0,
     width: width * 0.5,
     gap: 5,
   },

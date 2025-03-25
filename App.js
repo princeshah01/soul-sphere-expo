@@ -30,6 +30,7 @@ function MainApp() {
       try {
         const token = await AsyncStorage.getItem("token");
         console.log("🚀 ~ getUserData ~ token:", token);
+        // const
 
         if (!token) {
           setIsLoading(false);
@@ -46,7 +47,8 @@ function MainApp() {
           dispatch(
             login({
               token: token,
-              user: res.data,
+              user: res.data.user,
+              chatToken: res.data.chatToken,
             })
           );
         } else {
