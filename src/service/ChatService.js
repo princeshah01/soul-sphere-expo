@@ -51,5 +51,17 @@ export const getChannelList = async (user) => {
   }
 };
 
+
+
+export const getUserData = (item, loggedInuserId) => {
+  for (const key in item.state?.read) {
+    if (key !== loggedInuserId) {
+      return item.state?.read[key];
+    }
+  }
+  return null;
+};
+
+
 export default connectUser;
 export const getChatClient = () => client;

@@ -75,16 +75,19 @@
 
 // const styles = StyleSheet.create({});
 
-import { StyleSheet, View } from "react-native";
-import React from "react";
+import { StyleSheet, View, Text } from "react-native";
+import React, { useEffect } from "react";
 import { ChannelList } from "stream-chat-expo";
 import { useSelector } from "react-redux";
 import { useDarkMode } from "../../../provider/DarkModeProvider";
+import { Theme } from "../../../Constant/Theme";
+import ChatProfileImage from "./Components/ChatProfileImage";
+import { responsiveFontSize } from "react-native-responsive-dimensions";
+import { getUserData } from "../../../service/ChatService";
 
 const ChatScreen = ({ navigation }) => {
   const { user } = useSelector((store) => store.Auth);
   const { isDark } = useDarkMode();
-
   const HandleSelect = (channel) => {
     if (!channel) {
       console.error("Selected channel is undefined!");
@@ -102,6 +105,26 @@ const ChatScreen = ({ navigation }) => {
       ]}
     >
       <ChannelList
+        key={isDark ? "dark" : "light"}
+        PreviewAvatar={({ channel }) => {
+          const data = getUserData(channel, user._id);
+          console.log(data.user);
+          return (
+            <ChatProfileImage
+              profilePicture={data.user.profileImage}
+              online={data.user.online}
+            />
+          );
+        }}
+        PreviewTitle={({ channel }) => {
+          const data = getUserData(channel, user._id);
+          console.log(data.user);
+          return (
+            <Text style={[styles.name, isDark && styles.darkText]}>
+              {data.user.name}
+            </Text>
+          );
+        }}
         filters={{ type: "messaging", members: { $in: [user._id] } }}
         sort={{ last_message_at: -1 }}
         options={{ watch: true, state: true, presence: true, members: true }}
@@ -116,5 +139,12 @@ export default ChatScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  darkText: {
+    color: Theme.dark.text,
+  },
+  name: {
+    fontSize: responsiveFontSize(2.1),
+    fontWeight: 600,
   },
 });

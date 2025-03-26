@@ -18,6 +18,7 @@ import {
 import CustomButton from "../Components/CustomBotton";
 import MultiSlider from "@ptomasroos/react-native-multi-slider";
 import CustomMarker from "../Components/CustomMarker";
+import { createStackNavigator } from "@react-navigation/stack";
 const Tab = createBottomTabNavigator();
 
 const ChitChat = () => {
@@ -41,6 +42,7 @@ const getTabBarIcon = (routeName, focused, size) => {
   }
   return <Icon name={iconName} size={size} color={Theme.dark.primary} />;
 };
+const Stack = createStackNavigator();
 
 const HomeNavigation = ({ filterOpen, bottomSheetRef, isOpen }) => {
   const { isDark } = useDarkMode();

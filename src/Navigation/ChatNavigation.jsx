@@ -9,30 +9,19 @@ import LoadingScreen from "../Components/ShimmerUI/LoadingScreen";
 import connectUser from "../service/ChatService";
 import { setClient } from "../Store/Slice/ChatSlice";
 import { useDarkMode } from "../provider/DarkModeProvider";
+import { Theme } from "../Constant/Theme";
 const CallRoom = () => <Text>Call</Text>;
 
-const customTheme = {
-  channelPreview: {
-    container: {
-      backgroundColor: "red",
-    },
-  },
-  channelListMessenger: {
-    flatList: {
-      backgroundColor: "pink",
-    },
-    channelList: {
-      container: {
-        backgroundColor: "#1D3557",
-      },
-    },
-  },
-};
 const ChatStack = createStackNavigator();
 
 const ChatNavigation = () => {
   const { isDark } = useDarkMode();
   const getTheme = () => ({
+    messageList: {
+      container: {
+        backgroundColor: "transparent",
+      },
+    },
     colors: {
       accent_blue: isDark ? "#89BFFF" : "#005FFF",
       accent_dark_blue: isDark ? "#809FFF" : "#005DFF",
@@ -41,13 +30,13 @@ const ChatNavigation = () => {
       accent_info: isDark ? "#33FF99" : "#1FE06F",
       accent_red: isDark ? "#FF6666" : "#FF3742",
 
-      bg_gradient_end: isDark ? "#1E1E1E" : "#F7F7F7",
-      bg_gradient_start: isDark ? "#292929" : "#FCFCFC",
+      bg_gradient_end: isDark ? "#1F222B" : "#F7F7F7",
+      bg_gradient_start: isDark ? "#191A1F" : "#FCFCFC",
       bg_user: isDark ? "#222222" : "#F7F7F8",
 
-      black: isDark ? "#FFFFFF" : "#000000",
+      black: isDark ? "#F6F6F6" : "#000000",
       blue_alice: isDark ? "#333D5A" : "#E9F2FF",
-      border: isDark ? "#FFFFFF14" : "#00000014",
+      border: isDark ? "#1F222B" : "#EFEBEB",
       code_block: isDark ? "#444444" : "#DDDDDD",
       disabled: isDark ? "#666666" : "#B4BBBA",
 
@@ -70,7 +59,7 @@ const ChatNavigation = () => {
 
       targetedMessageBackground: isDark ? "#302D22" : "#FBF4DD",
 
-      text_high_emphasis: isDark ? "#FFFFFF" : "#080707",
+      text_high_emphasis: isDark ? "#F6F6F6" : "#080707",
       text_low_emphasis: isDark ? "#B3B3B3" : "#7E828B",
 
       transparent: "transparent",
@@ -79,7 +68,7 @@ const ChatNavigation = () => {
       white_snow: isDark ? "#292929" : "#FCFCFC",
     },
   });
-
+  const customTheme = {};
   const { token, user, chatToken } = useSelector((store) => store.Auth);
   const dispatch = useDispatch();
   const { isLoading } = useSelector((store) => store.Chat);
@@ -121,7 +110,7 @@ const ChatNavigation = () => {
         <ChatStack.Navigator
           initialRouteName="Chat"
           screenOptions={{
-            headerStyle: { height: 60 },
+            headerShown: false,
           }}
         >
           <ChatStack.Screen name="Chat" component={ChatScreen} />
