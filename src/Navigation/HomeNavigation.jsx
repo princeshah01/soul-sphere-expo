@@ -306,6 +306,7 @@ const Home = () => {
                 setSelectedGender("");
                 setValues([18, 99]);
                 bottomSheetRef?.current?.close();
+
                 console.log("call api");
               }}
             />
