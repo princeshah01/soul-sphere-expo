@@ -20,6 +20,14 @@ import MultiSlider from "@ptomasroos/react-native-multi-slider";
 import CustomMarker from "../Components/CustomMarker";
 const Tab = createBottomTabNavigator();
 
+const ChitChat = () => {
+  return (
+    <View>
+      <Text>hi</Text>
+    </View>
+  );
+};
+
 const getTabBarIcon = (routeName, focused, size) => {
   let iconName;
   if (routeName === "Match") {

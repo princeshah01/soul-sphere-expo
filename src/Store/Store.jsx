@@ -1,4 +1,4 @@
-import { configureStore } from "@reduxjs/toolkit";
+import { configureStore, getDefaultMiddleware } from "@reduxjs/toolkit";
 import Authreducer from "./Slice/Auth";
 import Requestreducer from "./Slice/requests";
 import Profilereducer from "./Slice/ProfileSetup";
@@ -12,6 +12,13 @@ const AppStore = configureStore({
     Connection: Connectionreducer,
     Chat: Chatreducer,
   },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: ["Chat/setClient", "Chat/addPrivateChannelList"],
+        ignoredPaths: ["Chat.chatClient", "Chat.privateChannelList"],
+      },
+    }),
 });
 
 export default AppStore;

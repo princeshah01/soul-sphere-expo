@@ -16,7 +16,7 @@ const { width, height } = Dimensions.get("screen");
 
 const UserConnection = ({ navigation }) => {
   const [IsFavToggle, setIsFavToggle] = useState(false);
-  const { token } = useSelector((store) => store.Auth);
+  const { token, user } = useSelector((store) => store.Auth);
   const dispatch = useDispatch();
 
   useFocusEffect(
@@ -32,10 +32,7 @@ const UserConnection = ({ navigation }) => {
   const { data, isLoading, isError, errorMsg } = useSelector(
     (store) => store.Connection
   );
-  // console.log("🚀 ~ UserConnection ~ data:", data);
-  // console.log("🚀 ~ UserConnection ~ errorMsg:", errorMsg);
-  // console.log("🚀 ~ UserConnection ~ isError:", isError);
-  // console.log("🚀 ~ UserConnection ~ isLoading:", isLoading);
+
   const { isDark } = useDarkMode();
   const [search, setSearch] = useState("");
   const [filteredData, setFilteredData] = useState(null);

@@ -251,3 +251,137 @@ const Chat = () => {
 };
 
 export default Chat;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  const fetchChannels = async () => {
+    try {
+      let filter = {
+        type: "messaging",
+        members: { $in: [user._id] },
+      };
+      let sort = { last_message_at: -1 };
+      let options = { watch: true, state: true, presence: true, members: true };
+      const channels = await client.queryChannels(filter, sort, options);
+      // console.log("🚀 ~ fetchChannels ~ channels:", channels);
+      dispatch(addPrivateChannelList(channels));
+    } catch (error) {
+      console.log("🚀 ~ fetchChannels ~ error:", error);
+    }
+  };
+
+
+    const getUserConnected = async () => {
+      setIsConnected(false);
+      try {
+        if (!token && !user) {
+          throw new Error("no token and user found");
+        }
+        console.log(client);
+        await client.connectUser(
+          {
+            id: user._id,
+            name: user.fullName,
+            email: user.email,
+          },
+          chatToken
+        );
+        console.log("connected done");
+        setIsConnected(true);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+
+
+
+
+
+
+
+
+
+
+    const customTheme = {
+      channelPreview: {
+        container: {
+          backgroundColor: "red",
+        },
+      },
+      channelListMessenger: {
+        flatList: {
+          backgroundColor: "pink",
+        },
+        channelList: {
+          container: {
+            backgroundColor: "#1D3557", // Change to your desired color
+          },
+        },
+      },
+    };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <ChannelList
+    PreviewAvatar={({ channel }) => {
+      // console.log(
+      //   "🚀 ~ ChatScreen ~ channel:",
+      //   JSON.stringify(channel, getCircularReplacer(), 2)
+      // );
+      // console.log(channel.data.metadata);
+      return (
+        <ChatProfileImage
+          profilePicture={channel.data.metadata[0].profilePicture}
+        />
+      );
+    }}
+    PreviewTitle={({ channel }) => {
+      return <Text>{channel.data.metadata[0].username}</Text>;
+    }}
+    filters={{
+      type: "messaging",
+      members: { $in: [user._id] },
+    }}
+    sort={{ last_message_at: -1 }}
+    options={{ watch: true, state: true, presence: true, members: true }}
+    onSelect={HandleSelect}
+  />
