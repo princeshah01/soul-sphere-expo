@@ -1,67 +1,86 @@
 import { StyleSheet, View, Text, ImageBackground } from "react-native";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Channel, MessageInput, MessageList } from "stream-chat-expo";
 import { getUserData } from "../../../service/ChatService";
 import { useSelector } from "react-redux";
 import { useDarkMode } from "../../../provider/DarkModeProvider";
-import { Theme } from "../../../Constant/Theme";
-import { BlurView } from "expo-blur";
-function getCircularReplacer() {
-  const seen = new WeakSet();
-  return (key, value) => {
-    if (typeof value === "object" && value !== null) {
-      if (seen.has(value)) {
-        return "[Circular]";
-      }
-      seen.add(value);
-    }
-    return value;
-  };
-}
+import CustomEmptyState from "./Components/CustomEmptyState";
+import BackButton from "../../../Components/BackButton";
+import { getChannel } from "../../../service/ChatService";
+import { ActivityIndicator } from "react-native-paper";
+
 const ChatRoom = ({ navigation, route }) => {
-  const { SelectedChannel } = route?.params || {};
+  const { SelectedChannel } = route?.params || null;
+  console.log(SelectedChannel);
   const { _id } = useSelector((store) => store.Auth.user);
   const { isDark } = useDarkMode();
-
-  // console.log(
-  //   "ChatRoom received channel:",
-  //   JSON.stringify(SelectedChannel, getCircularReplacer(), 2)
-  // );
-  console.log(SelectedChannel.state.read);
-  const data = getUserData(SelectedChannel, _id);
-  if (!SelectedChannel) {
+  const [channel, setChannel] = useState(null);
+  useEffect(() => {
+    const getChannelInfo = async () => {
+      try {
+        if (!SelectedChannel) {
+          throw new Error("no channel found ");
+        }
+        const ch = await getChannel(SelectedChannel);
+        setChannel(ch);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    getChannelInfo();
+  }, []);
+  if (!channel) {
     return (
       <View style={styles.container}>
-        <Text style={styles.errorText}>No Channel Selected</Text>
+        <ActivityIndicator />
       </View>
     );
   }
 
+  const data = getUserData(channel, _id);
+
   return (
-    <Channel key={isDark ? "dark" : "light"} channel={SelectedChannel}>
+    <View style={{ flex: 1 }}>
       <ImageBackground
-        style={{ flex: 1, resizeMode: "cover" }}
-        source={{
-          uri: data.user.profileImage,
-        }}
+        style={styles.backgroundImage}
+        source={{ uri: data.user.profileImage }}
       >
-        <View
-          style={{
-            flex: 1,
-            backgroundColor: "rgba(0,0,0,0.4)",
-          }}
+        <Channel
+          EmptyStateIndicator={CustomEmptyState}
+          key={isDark ? "dark" : "light"}
+          channel={channel}
         >
-          <MessageList key={isDark ? "dark" : "light"} />
-          <MessageInput />
-        </View>
+          <View style={styles.overlay}>
+            <View style={styles.header}>
+              <BackButton navigation={navigation} isDark={isDark} />
+            </View>
+            <MessageList
+              key={isDark ? "dark" : "light"}
+              style={{ backgroundColor: "transparent" }}
+              contentContainerStyle={{ flexGrow: 1 }}
+            />
+            <MessageInput />
+          </View>
+        </Channel>
       </ImageBackground>
-    </Channel>
+    </View>
   );
 };
 
 export default ChatRoom;
 
 const styles = StyleSheet.create({
+  backgroundImage: {
+    // flex: 1,
+    resizeMode: "cover",
+    width: "100%",
+    height: "100%",
+  },
+  overlay: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.5)",
+  },
+
   container: {
     flex: 1,
     justifyContent: "center",
@@ -72,4 +91,13 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "red",
   },
+  header: {
+    padding: "20",
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 15,
+    backgroundColor: "transparent",
+  },
+  backButton: { backgroundColor: "#F5F7F8", padding: 5, borderRadius: 12 },
+  title: { fontSize: 22, fontWeight: "600", marginLeft: 15 },
 });

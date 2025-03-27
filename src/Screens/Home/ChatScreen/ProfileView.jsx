@@ -20,8 +20,10 @@ const ProfileView = () => {
   const { isDark } = useDarkMode();
   const bottomSheetRef = useRef(null);
   const snapPoints = useMemo(() => ["30%", "90%"], []);
-  const userInfo = route?.params?.userInfo;
+  const userInfo = route?.params?.userInfo.userInfo;
   const twoPics = userInfo?.twoBestPics;
+  const channelId = route?.params.userInfo._id;
+  console.log("🚀 ~ ProfileView ~ channelId:", channelId);
   console.log("🚀 ~ ProfileView ~ userInfo:", twoPics);
 
   const { isPremiumUser } = useSelector((store) => store.Auth.user);
@@ -101,7 +103,10 @@ const ProfileView = () => {
                   setTimeout(() => {
                     navigation.pop();
                   }, 10);
-                  navigation.navigate("Chat", { screen: "ChatRoom" });
+                  navigation.navigate("ChitChat", {
+                    screen: "ChatRoom",
+                    params: { SelectedChannel: channelId },
+                  });
                 }}
               />
             </View>

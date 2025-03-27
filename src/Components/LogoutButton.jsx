@@ -5,6 +5,7 @@ import Icon from "@expo/vector-icons/Ionicons";
 import { TouchableOpacity } from "react-native";
 import { responsiveFontSize } from "react-native-responsive-dimensions";
 import { useSelector } from "react-redux";
+import { logoutStream } from "../service/ChatService";
 const Logout = () => {
   const user = useSelector((store) => store.Auth.user);
   // console.log(user);
@@ -13,7 +14,7 @@ const Logout = () => {
     try {
       await AsyncStorage.removeItem("token");
       dispatch(logout());
-
+      logoutStream();
       // console.log("App data cleared");
     } catch (e) {
       console.error("Failed to clear app data", e);

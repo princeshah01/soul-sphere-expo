@@ -1,6 +1,6 @@
 import { ScrollView, View, StyleSheet, Dimensions } from "react-native";
 import React, { useCallback, useState } from "react";
-import { useFocusEffect } from "@react-navigation/native";
+// import { useFocusEffect } from "@react-navigation/native";
 import CustomUserCard from "../../../Components/CustomUserCard.jsx";
 import SearchBar from "../../../Components/SearchBar.jsx";
 import Header from "../../ProfileSetup/Header";
@@ -12,13 +12,13 @@ import CustomButton from "../../../Components/CustomBotton.jsx";
 import { getConnections } from "../../../Store/Slice/ConnectionSlice.jsx";
 import ConnectionsLoading from "../../../Components/ShimmerUI/ConnectionsLoading.jsx";
 import Error from "../../../Components/Error.jsx";
+import { useFocusEffect } from "@react-navigation/native";
 const { width, height } = Dimensions.get("screen");
 
 const UserConnection = ({ navigation }) => {
   const [IsFavToggle, setIsFavToggle] = useState(false);
   const { token, user } = useSelector((store) => store.Auth);
   const dispatch = useDispatch();
-
   useFocusEffect(
     useCallback(() => {
       dispatch(getConnections(token));
@@ -36,7 +36,10 @@ const UserConnection = ({ navigation }) => {
   const { isDark } = useDarkMode();
   const [search, setSearch] = useState("");
   const [filteredData, setFilteredData] = useState(null);
-
+  console.log(
+    JSON.stringify(data, null, 2) +
+      "shdgfhsgdasgdasgdasgdasgdasgdasgdasgdasgdasgdasgdasgdasgdasgdasgdasgda"
+  );
   const handleSearch = (q) => {
     setSearch(q);
     const filterd = data.filter((item) => {
@@ -89,8 +92,9 @@ const UserConnection = ({ navigation }) => {
                         isToggle={IsFavToggle}
                         toggleIsFav={setIsFavToggle}
                         handleNavigation={() => {
+                          console.log(item);
                           navigation.navigate("profileView", {
-                            userInfo: item.userInfo,
+                            userInfo: item,
                           });
                         }}
                       />
@@ -105,7 +109,7 @@ const UserConnection = ({ navigation }) => {
                         toggleIsFav={setIsFavToggle}
                         handleNavigation={() => {
                           navigation.navigate("profileView", {
-                            userInfo: item.userInfo,
+                            userInfo: item,
                           });
                         }}
                       />
