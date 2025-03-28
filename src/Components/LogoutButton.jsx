@@ -6,7 +6,7 @@ import { TouchableOpacity } from "react-native";
 import { responsiveFontSize } from "react-native-responsive-dimensions";
 import { useSelector } from "react-redux";
 import { logoutStream } from "../service/ChatService";
-const Logout = () => {
+const Logout = ({ onPress }) => {
   const user = useSelector((store) => store.Auth.user);
   // console.log(user);
   const dispatch = useDispatch();
@@ -25,9 +25,7 @@ const Logout = () => {
       style={{
         paddingTop: 10,
       }}
-      onPress={() => {
-        HandleLogout();
-      }}
+      onPress={onPress}
     >
       <Icon name="log-out-outline" size={responsiveFontSize(4)} color="red" />
     </TouchableOpacity>

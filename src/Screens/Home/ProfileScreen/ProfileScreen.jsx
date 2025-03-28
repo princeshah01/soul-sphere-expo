@@ -1,5 +1,5 @@
 import { View, Text, Dimensions, StyleSheet } from "react-native";
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import ProfileImage from "../../../Components/ProfileSetup/ProfileImage";
 import CustomButton from "../../../Components/CustomBotton";
@@ -19,8 +19,11 @@ import {
   responsiveWidth,
   responsiveFontSize,
 } from "react-native-responsive-dimensions";
+import ConfirmLogout from "../../../Components/ConfirmLogoutModal";
 
 const ProfileScreen = ({ navigation }) => {
+  const [modalVisible, setModalVisible] = useState(false);
+
   const dispatch = useDispatch();
   const { user, token } = useSelector((store) => store.Auth);
   const { data } = useSelector((store) => store.Requests);
@@ -63,8 +66,14 @@ const ProfileScreen = ({ navigation }) => {
         },
       ]}
     >
-      <Header name="Profile" height={5} />
-      <View style={{ height: responsiveHeight(55) }}>
+      <Header
+        name="Profile"
+        height={5}
+        onLogoutPress={() => {
+          setModalVisible(true);
+        }}
+      />
+      <View style={{ height: responsiveHeight(50) }}>
         <ProfileImage profilePicture={profilePicture} size={150} />
         {/* profile address */}
         <Text
@@ -154,6 +163,11 @@ const ProfileScreen = ({ navigation }) => {
           name="Settings"
           isDark={isDark}
         />
+        <ConfirmLogout
+          modalVisible={modalVisible}
+          setModalVisible={setModalVisible}
+          // navigation={navigation}
+        />
       </View>
     </View>
   );
@@ -174,7 +188,6 @@ const styles = StyleSheet.create({
     padding: responsiveFontSize(3),
     alignSelf: "center",
     width: responsiveWidth(90),
-    height: responsiveHeight(23),
     marginVertical: responsiveHeight(2),
     borderRadius: 35,
   },

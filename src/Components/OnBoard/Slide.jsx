@@ -36,7 +36,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   description: {
-    fontSize: 16,
+    marginTop: 20,
+    fontSize: 17,
     textAlign: "center",
     paddingHorizontal: 20,
     lineHeight: 18,

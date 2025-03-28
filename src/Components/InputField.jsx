@@ -84,13 +84,13 @@ const InputField = ({
               <Ionicons
                 name="eye"
                 size={responsiveFontSize(2.5)}
-                color={isDark ? Theme.light.secondary : Theme.dark.secondary}
+                color={isDark ? "gray" : "gray"}
               />
             ) : (
               <Ionicons
                 name="eye-off"
                 size={responsiveFontSize(2.5)}
-                color={isDark ? Theme.light.secondary : Theme.dark.secondary}
+                color={isDark ? Theme.light.secondary : "gray"}
               />
             )}
           </TouchableWithoutFeedback>

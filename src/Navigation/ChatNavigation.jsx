@@ -55,7 +55,9 @@ const ChatNavigation = () => {
 
   if (isLoading || !chatClient) {
     return (
-      <View>
+      <View
+        style={{ flex: 1, justitifyContent: "center", alignItems: "center" }}
+      >
         <LoadingScreen />
       </View>
     );

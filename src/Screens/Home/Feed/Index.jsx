@@ -20,6 +20,11 @@ import { showToast } from "../../../Components/showToast";
 import CustomButton from "../../../Components/CustomBotton";
 import NoData from "../../../Components/NoData";
 import SvgComponent from "../../../Components/Slider";
+import {
+  responsiveHeight,
+  responsiveWidth,
+} from "react-native-responsive-dimensions";
+import LottieView from "lottie-react-native";
 const Feed = ({ filterOpen, bottomSheetRef, isOpen }) => {
   const { user, token } = useSelector((store) => store.Auth);
   const [isLoading, setIsLoading] = useState(true);
@@ -173,7 +178,7 @@ const Feed = ({ filterOpen, bottomSheetRef, isOpen }) => {
             <View
               style={{
                 flex: 1,
-                marginTop: -60,
+                marginTop: responsiveHeight(-9),
                 marginLeft: -10,
                 // backgroundColor: "red",
               }}
@@ -216,42 +221,47 @@ const Feed = ({ filterOpen, bottomSheetRef, isOpen }) => {
                   }}
                   overlayLabels={{
                     left: {
-                      title: "NOPE",
+                      title: (
+                        <View style={[styles.overlayLabel]}>
+                          <LottieView
+                            source={require("../../../../assets/sadEmoji.json")}
+                            autoPlay
+                            loop={true}
+                            style={styles.lottie}
+                          />
+                        </View>
+                      ),
                       style: {
-                        label: {
-                          backgroundColor: "#f07380EE",
-                          borderColor: "#eb1329",
-                          color: "#eb1329",
-                          borderWidth: 2,
-                          transform: [{ rotate: "-30deg" }],
-                        },
-                        wrapper: {
-                          flexDirection: "column",
-                          alignItems: "flex-end",
-                          justifyContent: "flex-start",
-                          position: "absolute",
-                          top: 150,
-                          right: 40,
-                        },
-                      },
-                    },
-                    right: {
-                      title: "LIKE",
-                      style: {
-                        label: {
-                          backgroundColor: "#a8eb718c",
-                          borderColor: "#73e813",
-                          color: "#73e813",
-                          borderWidth: 2,
-                          transform: [{ rotate: "30deg" }],
-                        },
                         wrapper: {
                           flexDirection: "column",
                           alignItems: "flex-start",
                           justifyContent: "flex-start",
                           position: "absolute",
-                          top: 150,
-                          left: 40,
+                          // top: 150,
+                          left: 80,
+                        },
+                      },
+                    },
+
+                    right: {
+                      title: (
+                        <View style={[styles.overlayLabel]}>
+                          <LottieView
+                            source={require("../../../../assets/happyEmoji.json")}
+                            autoPlay
+                            loop={true}
+                            style={[styles.lottie, { width: 150, height: 150 }]}
+                          />
+                        </View>
+                      ),
+                      style: {
+                        wrapper: {
+                          flexDirection: "column",
+                          alignItems: "flex-end",
+                          justifyContent: "flex-start",
+                          position: "absolute",
+                          // top: 150,
+                          right: 80,
                         },
                       },
                     },
@@ -290,5 +300,25 @@ const styles = StyleSheet.create({
     height: height * 0.9,
     justifyContent: "center",
     alignItems: "center",
+  },
+  overlayLabel: {
+    justifyContent: "center",
+    alignItems: "center",
+    width: responsiveWidth(100),
+    height: responsiveHeight(100),
+  },
+  overlayLeft: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+  },
+  overlayRight: {
+    position: "absolute",
+    top: 0,
+    right: 0,
+  },
+  lottie: {
+    width: 100,
+    height: 100,
   },
 });

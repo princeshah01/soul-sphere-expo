@@ -155,7 +155,7 @@ export default Card;
 
 const styles = StyleSheet.create({
   container: {
-    height: responsiveHeight(82),
+    height: responsiveHeight(78),
     width: responsiveWidth(95),
     borderRadius: 20,
     borderWidth: 1,
@@ -166,7 +166,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
   },
   imageContainer: {
-    height: responsiveHeight(82),
+    height: responsiveHeight(78),
   },
   image: {
     width: "100%",

@@ -6,7 +6,7 @@ export const Theme = {
     border: "#efefef",
     background: "#fff",
     text: "#020a00",
-    secondary: "#fafafa",
+    secondary: "#f2f0f0",
     simmer: ["#f0f0f0", "#e0e0e0", "#f0f0f0"],
   },
   dark: {

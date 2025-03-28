@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Text, View } from "react-native";
 import Logo from "../../Components/Logo";
 import {
@@ -9,14 +9,17 @@ import {
 import { useDarkMode } from "../../provider/DarkModeProvider";
 import { Theme } from "../../Constant/Theme";
 import Logout from "../../Components/LogoutButton";
+import ConfirmLogout from "../../Components/ConfirmLogoutModal";
 
 const ProfileSetupHeader = ({
   currentIndex,
   name,
   isLogout = true,
   height = 10,
+  onLogoutPress,
 }) => {
   const { isDark } = useDarkMode();
+
   return (
     <View
       style={{
@@ -49,7 +52,7 @@ const ProfileSetupHeader = ({
             {name}
           </Text>
         </View>
-        {isLogout && <Logout />}
+        {isLogout && <Logout onPress={onLogoutPress} />}
       </View>
       {name === "Profile Setup" && (
         <View
