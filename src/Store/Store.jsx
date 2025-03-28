@@ -15,8 +15,8 @@ const AppStore = configureStore({
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {
-        ignoredActions: ["Chat/setClient", "Chat/addPrivateChannelList"],
-        ignoredPaths: ["Chat.chatClient", "Chat.privateChannelList"],
+        ignoredActions: ["Chat/setClient"],
+        ignoredPaths: ["Chat.chatClient"],
       },
     }),
 });

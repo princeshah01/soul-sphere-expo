@@ -9,7 +9,7 @@ const connectUser = async (user, chatToken) => {
     }
 
     if (!client) {
-      client = StreamChat.getInstance("btwwwbzvwcqb");
+      client = StreamChat.getInstance("gmqsxu8z87d4");
     }
 
     if (client.userID !== user._id) {

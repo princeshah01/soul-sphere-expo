@@ -1,4 +1,4 @@
-import { StyleSheet, View, Text, ImageBackground } from "react-native";
+import { StyleSheet, View, StatusBar, ImageBackground } from "react-native";
 import React, { useEffect, useState } from "react";
 import { Channel, MessageInput, MessageList } from "stream-chat-expo";
 import { getUserData } from "../../../service/ChatService";
@@ -40,30 +40,28 @@ const ChatRoom = ({ navigation, route }) => {
   const data = getUserData(channel, _id);
 
   return (
-    <View style={{ flex: 1 }}>
-      <ImageBackground
-        style={styles.backgroundImage}
-        source={{ uri: data.user.profileImage }}
+    <ImageBackground
+      style={styles.backgroundImage}
+      source={{ uri: data.user.profileImage }}
+    >
+      <Channel
+        EmptyStateIndicator={CustomEmptyState}
+        key={isDark ? "dark" : "light"}
+        channel={channel}
       >
-        <Channel
-          EmptyStateIndicator={CustomEmptyState}
-          key={isDark ? "dark" : "light"}
-          channel={channel}
-        >
-          <View style={styles.overlay}>
-            <View style={styles.header}>
-              <BackButton navigation={navigation} isDark={isDark} />
-            </View>
-            <MessageList
-              key={isDark ? "dark" : "light"}
-              style={{ backgroundColor: "transparent" }}
-              contentContainerStyle={{ flexGrow: 1 }}
-            />
-            <MessageInput />
+        <View style={styles.overlay}>
+          <View style={styles.header}>
+            <BackButton navigation={navigation} isDark={isDark} />
           </View>
-        </Channel>
-      </ImageBackground>
-    </View>
+          <MessageList
+            key={isDark ? "dark" : "light"}
+            style={{ backgroundColor: "transparent" }}
+            contentContainerStyle={{ flexGrow: 1 }}
+          />
+          <MessageInput />
+        </View>
+      </Channel>
+    </ImageBackground>
   );
 };
 
@@ -71,10 +69,7 @@ export default ChatRoom;
 
 const styles = StyleSheet.create({
   backgroundImage: {
-    // flex: 1,
     resizeMode: "cover",
-    width: "100%",
-    height: "100%",
   },
   overlay: {
     flex: 1,

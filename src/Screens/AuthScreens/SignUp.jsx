@@ -142,7 +142,7 @@ const Signup = ({ navigation }) => {
       contentContainerStyle={{ alignItems: "center" }}
     >
       <View style={styles.logo}>
-        <Logo size="80" />
+        <Logo size="40" />
       </View>
       <CustomModal
         visible={modalVisible}

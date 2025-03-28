@@ -14,6 +14,11 @@ import axios from "axios";
 import env from "../../../Constant/env";
 import { addRequests } from "../../../Store/Slice/requests";
 import { useFocusEffect } from "@react-navigation/native";
+import {
+  responsiveHeight,
+  responsiveWidth,
+  responsiveFontSize,
+} from "react-native-responsive-dimensions";
 
 const ProfileScreen = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -58,8 +63,8 @@ const ProfileScreen = ({ navigation }) => {
         },
       ]}
     >
-      <Header name="Profile" />
-      <View style={{ height: height * 0.4, backgroundColor: "transparent" }}>
+      <Header name="Profile" height={5} />
+      <View style={{ height: responsiveHeight(55) }}>
         <ProfileImage profilePicture={profilePicture} size={150} />
         {/* profile address */}
         <Text
@@ -70,12 +75,18 @@ const ProfileScreen = ({ navigation }) => {
         >
           {fullName}
         </Text>
-        <View style={styles.subscriptionView}>
-          <View style={{ width: "80%", marginTop: 10 }}>
+        {/* background */}
+        <View style={[styles.subscriptionView]}>
+          <View
+            style={{
+              width: responsiveWidth(58),
+              height: "100%",
+            }}
+          >
+            {/* text */}
             <Text style={styles.subscriptionTitle}>Enjoy All benefits!</Text>
             <Text style={styles.subscriptionText}>
-              Enjoy unlimited swiping . like , without restrictions , & without
-              ads
+              Enjoy unlimited swiping , like without restrictions & without ads
             </Text>
             <CustomButton
               outline={true}
@@ -91,7 +102,14 @@ const ProfileScreen = ({ navigation }) => {
               }}
             />
           </View>
-          <View style={{ width: "30%" }}>
+          <View
+            style={{
+              width: responsiveWidth(20),
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            {/* icon */}
             <MaterialCommunityIcons
               name="crown-outline"
               size={80}
@@ -100,6 +118,7 @@ const ProfileScreen = ({ navigation }) => {
           </View>
         </View>
       </View>
+
       <View style={styles.profileButtons}>
         <CustomProfileBtn
           onPress={() => {
@@ -141,52 +160,40 @@ const ProfileScreen = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
-  main: { height, backgroundColor: "#fff" },
-  headerView: {
-    height: height * 0.08,
-    backgroundColor: "#fff",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingHorizontal: 20,
-  },
-  headerTitleView: { flexDirection: "row", alignItems: "center", gap: 10 },
-  headerTitle: { fontSize: 22, fontWeight: "600", letterSpacing: 1.5 },
-
+  main: { height: responsiveHeight(100), backgroundColor: "#fff" },
   profileName: {
     textAlign: "center",
-    fontSize: 28,
+    fontSize: responsiveFontSize(3.5),
     color: "Black",
-    fontWeight: 600,
+    fontWeight: 500,
     opacity: 0.8,
   },
   subscriptionView: {
     backgroundColor: Theme.primary,
     flexDirection: "row",
-    padding: 20,
+    padding: responsiveFontSize(3),
     alignSelf: "center",
-    alignItems: "center",
-    marginHorizontal: 50,
-    marginVertical: 20,
-
+    width: responsiveWidth(90),
+    height: responsiveHeight(23),
+    marginVertical: responsiveHeight(2),
     borderRadius: 35,
   },
   subscriptionTitle: {
-    fontSize: 20,
+    fontSize: responsiveFontSize(2.5),
     color: "#fff",
     fontWeight: 700,
   },
   subscriptionText: {
     color: "#fff",
-    fontSize: 14,
-    width: width * 0.5,
+    fontSize: responsiveFontSize(2),
+    width: responsiveWidth(55),
   },
   profileButtons: {
+    height: responsiveHeight(40),
     margin: "auto",
-    marginTop: width * 0.25,
-    width: width * 0.7,
+    width: responsiveWidth(70),
     alignItems: "flex-Start",
-    gap: 10,
+    gap: 15,
   },
   centeredView: {
     flex: 1,

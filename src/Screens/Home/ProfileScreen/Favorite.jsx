@@ -70,7 +70,7 @@ const Favorite = ({ navigation }) => {
               navigation={navigation}
               handleNavigation={() => {
                 navigation.navigate("ProfileViewFav", {
-                  userInfo: item.userInfo,
+                  userInfo: item,
                 });
               }}
               isDark={isDark}

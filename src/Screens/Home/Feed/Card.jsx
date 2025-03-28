@@ -1,21 +1,17 @@
-import {
-  StyleSheet,
-  Dimensions,
-  View,
-  Text,
-  ScrollView,
-  Image,
-} from "react-native";
+import { StyleSheet, View, Text, ScrollView, Image } from "react-native";
 import React from "react";
-const { width, height } = Dimensions.get("screen");
 import Icon from "@expo/vector-icons/Ionicons";
 import InterestRender from "./InterestRender";
 import { Theme } from "../../../Constant/Theme";
 import { useDarkMode } from "../../../provider/DarkModeProvider";
 import { LinearGradient } from "expo-linear-gradient";
+import {
+  responsiveHeight,
+  responsiveWidth,
+  responsiveFontSize,
+} from "react-native-responsive-dimensions";
 
 const Card = ({ user }) => {
-  // console.log("card data form card.js", user);
   const { isDark } = useDarkMode();
   return (
     <View
@@ -40,7 +36,11 @@ const Card = ({ user }) => {
           <View style={styles.infoContainer}>
             <LinearGradient
               colors={["transparent", Theme.primary + "B3"]}
-              style={{ width: width, height: height * 0.3, paddingLeft: 20 }}
+              style={{
+                width: responsiveWidth(100),
+                height: responsiveHeight(40),
+                paddingLeft: 20,
+              }}
             >
               <View style={{ position: "absolute", bottom: 20, left: 20 }}>
                 {user.isVerified && (
@@ -138,8 +138,8 @@ const Card = ({ user }) => {
                   key={`${user._id}${idx}`}
                   source={{ uri: item }}
                   style={{
-                    width: width * 0.8,
-                    height: height * 0.4,
+                    width: responsiveWidth(80),
+                    height: responsiveHeight(40),
                     borderRadius: 5,
                   }}
                 />
@@ -155,9 +155,8 @@ export default Card;
 
 const styles = StyleSheet.create({
   container: {
-    // flex: 1,
-    height: height * 0.8,
-    width: width * 0.95,
+    height: responsiveHeight(82),
+    width: responsiveWidth(95),
     borderRadius: 20,
     borderWidth: 1,
     overflow: "hidden",
@@ -167,7 +166,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
   },
   imageContainer: {
-    height: height * 0.8,
+    height: responsiveHeight(82),
   },
   image: {
     width: "100%",
@@ -177,11 +176,10 @@ const styles = StyleSheet.create({
   infoContainer: {
     position: "absolute",
     bottom: 0,
-    width: width * 0.5,
     gap: 5,
   },
   text: {
-    fontSize: 18,
+    fontSize: responsiveFontSize(2.1),
     fontWeight: "700",
     textTransform: "capitalize",
     opacity: 0.8,
